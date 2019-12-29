@@ -1557,7 +1557,7 @@ function draw_player_cell( player_struct, small=false, is_captain=false, slot_cl
 	
 	var new_player_item = document.createElement("div");
 	if(player_struct.mark) {
-	  new_player_item.style.backgroundColor = "#55AA55";
+	  new_player_item.style.backgroundColor = "#88cc88";
     }
 
 	new_player_item.className = "cell player-item";
