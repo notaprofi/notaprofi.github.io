@@ -528,6 +528,23 @@ function adjust_players_ranks( team, win ) {
 	}
 }
 
+function mark_players_in_team( team ) {
+	for( i in lobby ) {
+		lobby[i].mark = false;
+	}
+	if ( is_role_lock_enabled() ) 	{
+		for( i in team["tank"] ) {
+			team["tank"][i].mark = true;
+		}
+		for( i in team["dps"] ) {
+			team["dps"][i].mark = true;
+		}
+		for( i in team["support"] ) {
+			team["support"][i].mark = true;
+		}
+	}
+}
+
 function str_padding( source_str, length, padding_char=" " ) {
 	var result = source_str;
 	while ( result.length < length ) {

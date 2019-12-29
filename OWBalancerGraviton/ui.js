@@ -899,6 +899,10 @@ function adjust_team_ranks( team, win ) {
 	adjust_players_ranks( team, win );
 }
 
+function mark_players(team1, team2) {
+	mark_players_in_team(team1);
+	mark_players_in_team(team2);
+}
 
 function stop_stats_update() {
 	StatsUpdater.stop( true );
@@ -1537,7 +1541,7 @@ function draw_player( player_struct, small=false, is_captain=false, slot_class=u
 		class_icon.src = "class_icons/"+slot_class+".png";
 		class_icon.title = slot_class;
 		class_cell.appendChild(class_icon);
-		
+
 		new_player_item_row.appendChild(class_cell);
 	}
 	
@@ -1552,6 +1556,10 @@ function draw_player_cell( player_struct, small=false, is_captain=false, slot_cl
 	var br_node;
 	
 	var new_player_item = document.createElement("div");
+	if(player_struct.mark) {
+	  new_player_item.style.backgroundColor = "#55AA55";
+    }
+
 	new_player_item.className = "cell player-item";
 	if( player_struct.empty ) {
 			new_player_item.classList.add("empty-player");

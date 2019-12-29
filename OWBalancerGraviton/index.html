@@ -1,3 +1,4 @@
+<meta http-equiv="Cache-control" content="no-cache">
 <!DOCTYPE html>
 <html>
 <head>
@@ -70,17 +71,12 @@
 			
 			<div class="lobby-container">
 				<div class="table team" id="lobby">
-
 				</div>
 			</div>
 			
 			<br/>
 			<div title="Drop player here to delete" class="trashcan" id="trashcan" ondrop="player_drop(event)" ondragover="player_allowDrop(event)">				
 				&#9760; Delete player (drop here)
-			</div>
-			<br/>
-			<div>
-				<input class="big-btn" type="button" onclick="clear_lobby();" value="Clear lobby"/>
 			</div>
 		</div>
 		
@@ -143,13 +139,14 @@
 				
 			</div>
 		</div>
+
+		<div class="cell" style="vertical-align: top; padding-top: 0em; min-width: 5em; text-align: center;">
+			<input title="Mark all players, who played this game and unmark others." type="button" class="team_btn" onclick="mark_players(team1_slots, team2_slots);redraw_lobby();redraw_teams();" value="Mark Players"/>
 		
-		<div class="cell" style="vertical-align: top; padding-top: 10em; min-width: 5em; text-align: center;">
-		<br/>
+	</br></br></br></br></br></br></br></br></br></br>
 		<span style="font-size: 30pt;"><b><i>VS</i></b></span>
-		<br/>
-		<br/>
 		</div>
+		
 		
 		<div class="cell team-cell">
 			<div class="team-toolbar">
