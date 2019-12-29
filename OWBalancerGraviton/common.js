@@ -225,6 +225,7 @@ function get_default_settings() {
 		update_edited_fields: false,
 		update_picked: true,
 		update_picked_maxage: 15,
+		adjust_SR_after_match_value: 50,
 	};
 	
 	for ( let class_name of class_names ) {
@@ -510,7 +511,7 @@ function sort_players( team, sort_field = 'sr', order_asc=false ) {
 
 function adjust_players_ranks( team, win ) {
 	if ( is_role_lock_enabled() ) {
-		var rank_change = 50;
+		var rank_change = Settings["adjust_SR_after_match_value"];
 		if ( win == 'loss') { 
 			rank_change = -rank_change; 
 		}
