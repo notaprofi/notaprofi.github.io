@@ -22,8 +22,8 @@
 
 <body>
 
-<div class="page-title">Overwatch custom game balancer</div>
-<div class="copyright">2017-2019 by <a href="https://github.com/adminimusRU">l33t m3at</a> | Stats data by <a href="https://github.com/SunDwarf/OWAPI">OWAPI</a></div>
+<div class="page-title">Overwatch custom game REbalancer</div>
+<div class="copyright">2019-2020 by <a href="https://github.com/notaprofi">notaprofi</a> | 2017-2019 by <a href="https://github.com/adminimusRU">l33t m3at</a> | Stats data by <a href="https://github.com/SunDwarf/OWAPI">OWAPI</a></div>
 <br/>
 
 <br/>
@@ -78,6 +78,10 @@
 			<div title="Drop player here to delete" class="trashcan" id="trashcan" ondrop="player_drop(event)" ondragover="player_allowDrop(event)">				
 				&#9760; Delete player (drop here)
 			</div>
+			<br/>
+			<div>
+				<input class="big-btn" type="button" onclick="clear_lobby();" value="Clear lobby"/>
+			</div>
 		</div>
 		
 		
@@ -95,7 +99,8 @@
 			</button>
 			<input title="Sort team by name" type="button" class="team_btn" onclick="sort_team(team1, 'display_name');redraw_teams();" value="&uarr;&darr;Az"/>
 			<input title="Sort team by SR" type="button" class="team_btn" onclick="sort_team(team1, 'sr');redraw_teams();" value="&uarr;&darr;123"/>
-			</div>
+			<input title="Adjust SR" type="button" class="team_btn" onclick="adjust_team_ranks(team1_slots, 'win');adjust_team_ranks(team2_slots, 'loss');redraw_teams();" value="Blue won"/>
+		    </div>
 			
 			<div>
 			<input id="team1_name" type="text" class="team-title" value="Team 1" autocomplete="off" onchange="save_team_name(this);">
@@ -155,6 +160,7 @@
 			</button>
 			<input title="Sort team by name" type="button" class="team_btn" onclick="sort_team(team2, 'display_name');redraw_teams();" value="&uarr;&darr;Az"/>
 			<input title="Sort team by SR" type="button" class="team_btn" onclick="sort_team(team2, 'sr');redraw_teams();" value="&uarr;&darr;123"/>
+			<input title="Adjust SR" type="button" class="team_btn" onclick="adjust_team_ranks(team1_slots, 'loss');adjust_team_ranks(team2_slots, 'win');redraw_teams();" value="Red won"/>
 			</div>
 			
 			<div>

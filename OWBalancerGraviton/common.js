@@ -508,6 +508,26 @@ function sort_players( team, sort_field = 'sr', order_asc=false ) {
 	}
 }
 
+function adjust_players_ranks( team, win ) {
+	if ( is_role_lock_enabled() ) {
+		var rank_change = 50;
+		if ( win == 'loss') { 
+			rank_change = -rank_change; 
+		}
+
+		team["tank"][0].sr_by_class["tank"] += rank_change;
+		team["tank"][1].sr_by_class["tank"] += rank_change;
+		team["dps"][0].sr_by_class["dps"] += rank_change;
+		team["dps"][1].sr_by_class["dps"] += rank_change;
+		team["support"][0].sr_by_class["support"] += rank_change;
+		team["support"][1].sr_by_class["support"] += rank_change;
+		for( var i=0; i<team.length; i++) {
+			//team[i].level++;
+			//team[i].id = "papa";
+		}
+	}
+}
+
 function str_padding( source_str, length, padding_char=" " ) {
 	var result = source_str;
 	while ( result.length < length ) {

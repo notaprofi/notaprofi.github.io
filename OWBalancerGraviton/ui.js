@@ -895,6 +895,10 @@ function sort_team( team, sort_field = 'sr' ) {
 	sort_players( team, sort_field );
 }
 
+function adjust_team_ranks( team, win ) {
+	adjust_players_ranks( team, win );
+}
+
 
 function stop_stats_update() {
 	StatsUpdater.stop( true );
