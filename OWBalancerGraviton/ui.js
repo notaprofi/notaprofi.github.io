@@ -490,7 +490,7 @@ function export_teams_dlg_open() {
 	export_teams_dlg_change_format();
 }
 
-function fill_teams(marked_last = false) {
+function fill_teams(unmarked_only = false) {
 	if ( is_role_lock_enabled() ) {
 		for ( var team_slots of [team1_slots, team2_slots] ) {
 			for ( var class_name in team_slots ) {
@@ -503,11 +503,11 @@ function fill_teams(marked_last = false) {
 						if ( ! checkin_list.has(player.id) ) {
 							continue;
 						}
-						if (marked_last && player.mark) {
+						if (unmarked_only && player.mark) {
 							continue;
 						}
 					}
-					if ( player.classes[0] !== class_name && (!marked_last || player.classes[1] !== class_name && player.classes[2] !== class_name)) {
+					if ( player.classes[0] !== class_name ) {
 						continue;
 					}
 					available_players.push( player );
@@ -529,6 +529,9 @@ function fill_teams(marked_last = false) {
 				for ( var player of lobby ) {
 					if ( checkin_list.size > 0 ) {
 						if ( ! checkin_list.has(player.id) ) {
+							continue;
+						}
+						if (unmarked_only && player.mark) {
 							continue;
 						}
 					}
@@ -553,6 +556,9 @@ function fill_teams(marked_last = false) {
 				for ( var player of lobby ) {
 					if ( checkin_list.size > 0 ) {
 						if ( ! checkin_list.has(player.id) ) {
+							continue;
+						}
+						if (unmarked_only && player.mark) {
 							continue;
 						}
 					}
@@ -596,7 +602,7 @@ function fill_teams(marked_last = false) {
 	save_players_list();
 	redraw_lobby();
 	redraw_teams();
-	if(marked_last) fill_teams(false);
+	if(unmarked_only) fill_teams(false);
 }
 
 function refill_teams() {
