@@ -465,12 +465,14 @@ function round_to( value, precision ) {
 function sort_players( team, sort_field = 'sr', order_asc=false ) {
 	// if sorting by checkin sort by something else first
 	if (sort_field == 'checkin_name') {
-		sort_players( team, 'display_name', false );
+		sort_players( team, 'display_name', order_asc );
 		sort_field = 'checkin';
+		order_asc = false;
 	} else if (sort_field == 'checkin_date') {
 		sort_players( team, 'display_name', false );
-		sort_players( team, 'last_updated', false );
+		sort_players( team, 'last_updated', order_asc );
 		sort_field = 'checkin';
+		order_asc = false;
 	}
 
 	// sort_players
