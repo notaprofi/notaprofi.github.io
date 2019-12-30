@@ -117,6 +117,10 @@
 				<br/>
 				<br/>
 				
+				<input value="ReFill & Balance" class="big-btn" type="button" onclick="refill_teams();" title="1. Clear both teams &#013;2. Fill them with random checked-in players. Non-marked players go first. &#013;3. Run a balance."/>
+				<br/>
+				<br/>
+				
 				<input class="big-btn" type="button" id="balance_btn" onclick="balance_teams();" value="&#9878; Balance teams" title="Automatically find most balanced compositions"/>
 				<br/>
 				<br/>
@@ -143,7 +147,7 @@
 		</div>
 
 		<div class="cell" style="vertical-align: top; padding-top: 0em; min-width: 5em; text-align: center;">
-			<input title="Mark all players, who played this game and unmark others." type="button" class="team_btn" onclick="mark_players(team1_slots, team2_slots);redraw_lobby();redraw_teams();" value="Mark Players"/>
+			<input title="Mark the players in teams and unmark the others." type="button" class="team_btn" onclick="mark_players(team1_slots, team2_slots);redraw_lobby();redraw_teams();" value="Mark Players"/>
 		
 	</br></br></br></br></br></br></br></br></br></br>
 		<span style="font-size: 30pt;"><b><i>VS</i></b></span>
@@ -159,9 +163,9 @@
 			</button>
 			<input title="Sort team by name" type="button" class="team_btn" onclick="sort_team(team2, 'display_name');redraw_teams();" value="&uarr;&darr;Az"/>
 			<input title="Sort team by SR" type="button" class="team_btn" onclick="sort_team(team2, 'sr');redraw_teams();" value="&uarr;&darr;123"/>
-			<input title="Adjust SR" type="button" class="team_btn" onclick="adjust_team_ranks(team1_slots, 'loss');adjust_team_ranks(team2_slots, 'win');redraw_teams();" value="Red won"/>
-			</div>
-			
+			<input title="Adjust SR" type="button" class="team_btn" width="100%" onclick="adjust_team_ranks(team1_slots, 'loss');adjust_team_ranks(team2_slots, 'win');redraw_teams();" value="Red won"/>
+			</div>			
+
 			<div>
 			<input id="team2_name" type="text" class="team-title" value="Team 2" autocomplete="off" onchange="save_team_name(this);">
 			</div>
@@ -223,7 +227,7 @@
 			<input value="Fill teams" class="big-btn" type="button" onclick="fill_teams();" title="Pick random checked-in players from lobby to fill all empty slots in teams"/>
 			<br/>
 			<br/>
-				
+
 			<div class="tips">
 				<span class="tips-title">
 					<span style="color: white; text-shadow: 0 0 3px black; font: bold 26pt sans-serif;">?</span>
