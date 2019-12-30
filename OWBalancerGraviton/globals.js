@@ -38,3 +38,7 @@ var rank_icons_datauri = {};
 
 // worker for executing balancer in dedicated thread
 var BalanceWorker = undefined;
+
+// lobby sorting options
+var lobby_order_inverse = false;
+var lobby_sort_field = 'checkin_name';

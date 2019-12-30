@@ -818,7 +818,7 @@ function shuffle_lobby() {
 }
 
 function sort_lobby( sort_field = 'sr', button_element=undefined ) {
-	var order_inverse = false;
+	/*var order_inverse = false;
 	if (button_element !== undefined) {
 		if (button_element.hasAttribute("order_inverse")) {
 			order_inverse = true;
@@ -826,9 +826,15 @@ function sort_lobby( sort_field = 'sr', button_element=undefined ) {
 		} else {
 			button_element.setAttribute("order_inverse", "");
 		}
+	}*/
+	if (sort_field == lobby_sort_field) {
+		lobby_order_inverse = !lobby_order_inverse;
 	}
-	sort_players(lobby, sort_field, order_inverse);
-	save_players_list();
+	else {
+		lobby_order_inverse = false;
+	}
+	lobby_sort_field = sort_field;
+
 	redraw_lobby();
 }
 
@@ -2004,6 +2010,11 @@ function player_class_row_add() {
 }
 
 function redraw_lobby() {
+	// sort first
+	sort_players(lobby, lobby_sort_field, lobby_order_inverse);
+	save_players_list();
+
+	// redraw_lobby
 	var team_container = document.getElementById("lobby");
 	team_container.innerHTML = "";
 	for( var i=0; i<lobby.length; i++) {

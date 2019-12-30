@@ -463,6 +463,17 @@ function round_to( value, precision ) {
 }
 
 function sort_players( team, sort_field = 'sr', order_asc=false ) {
+	// if sorting by checkin sort by something else first
+	if (sort_field == 'checkin_name') {
+		sort_players( team, 'display_name', false );
+		sort_field = 'checkin';
+	} else if (sort_field == 'checkin_date') {
+		sort_players( team, 'display_name', false );
+		sort_players( team, 'last_updated', false );
+		sort_field = 'checkin';
+	}
+
+	// sort_players
 	var order = 1;
 	if (order_asc) {
 		order = -1;
@@ -516,14 +527,18 @@ function adjust_players_ranks( team, win ) {
 			rank_change = -rank_change; 
 		}
 
+		var time = new Date;
 		for( i in team["tank"] ) {
 			team["tank"][i].sr_by_class["tank"] += rank_change;
+			team["tank"][i].last_updated = time;
 		}
 		for( i in team["dps"] ) {
 			team["dps"][i].sr_by_class["dps"] += rank_change;
+			team["dps"][i].last_updated = time;
 		}
 		for( i in team["support"] ) {
 			team["support"][i].sr_by_class["support"] += rank_change;
+			team["support"][i].last_updated = time;
 		}
 	}
 }

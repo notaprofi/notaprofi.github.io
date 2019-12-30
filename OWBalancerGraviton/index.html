@@ -11,11 +11,11 @@
 <script src="globals.js"></script>
 
 <script src="ow_defines.js"></script>
-<script src="common.js?td=rnd"></script>
+<script src="common.js?blabla"></script>
 <script src="owapi.js"></script>
 <script src="stats_updater.js"></script>
 <script src="import_export.js"></script>
-<script src="ui.js?td=rnd"></script>
+<script src="ui.js"></script>
 
 <script src="init.js" defer></script>
 
@@ -47,11 +47,13 @@
 				<div class="dropdown" style="float:right;">
 					<button class="team_btn dropbtn">&uarr;&darr; Sort &#x25BC;</button>
 					<div class="dropdown-content">
+						<div onclick="sort_lobby('checkin_name', this);">by check-in & name</div>
+						<div onclick="sort_lobby('checkin_date', this);">by check-in & date</div>
 						<div onclick="sort_lobby('display_name', this);">by name</div>
 						<div onclick="sort_lobby('sr', this);">by SR</div>
 						<div onclick="sort_lobby('class', this);">by class</div>
-						<div onclick="sort_lobby('level', this);">by level</div>
-						<div onclick="sort_lobby('checkin', this);">by check-in</div>						
+						<div onclick="sort_lobby('last_updated', this);">by stat update date</div>
+						<div onclick="sort_lobby('level', this);">by level</div>						
 						<div onclick="shuffle_lobby();">shuffle</div>
 					</div>
 				</div>
