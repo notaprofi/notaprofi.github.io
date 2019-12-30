@@ -1189,6 +1189,42 @@ function player_drop(ev) {
 	
 	var drag_action = "swap";
 	
+	if (target_id == "checkincan" || target_id == "checkoutcan") {
+		
+		var is_checkedin_alredy = checkin_list.has(dragged_id);
+		if( target_id == "checkincan" && !is_checkedin_alredy ) {
+			// add to checkin
+			checkin_list.add(dragged_id);
+			save_checkin_list();
+		}
+			
+		if( target_id == "checkoutcan" && is_checkedin_alredy ) {
+			// remove from pinned
+			pinned_players.delete(dragged_id);
+			save_pinned_list();
+			// remove from checkin
+			checkin_list.delete(dragged_id);
+			save_checkin_list();
+		}
+	
+		redraw_lobby();
+		redraw_teams();
+		return false;
+		/*if (target_id == "checkoutcan" && dragged_team != lobby) { // dragged_team undefined
+			target_team = lobby;
+			target_index = 0;
+			target_player = lobby[target_index];
+			drag_action = "move";
+			target_team = lobby;
+			target_index = lobby.length;
+			target_team.splice(0, 0, dragged_player);
+			dragged_team.splice(dragged_index, 1);
+		}
+		else { 
+			return false;
+		}*/
+	}
+		
 	if( target_id == "trashcan" ) {
 		drag_action = "remove";
 		target_id = "";

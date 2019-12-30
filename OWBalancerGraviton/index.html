@@ -6,7 +6,7 @@
 <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
 <title>OW Custom game balancer</title>
 <meta name="description" content="Overwatch custom game balancer">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?bla">
 
 <script src="globals.js"></script>
 
@@ -15,7 +15,7 @@
 <script src="owapi.js"></script>
 <script src="stats_updater.js"></script>
 <script src="import_export.js"></script>
-<script src="ui.js"></script>
+<script src="ui.js?bla"></script>
 
 <script src="init.js" defer></script>
 
@@ -75,11 +75,6 @@
 				<div class="table team" id="lobby">
 				</div>
 			</div>
-			
-			<br/>
-			<div title="Drop player here to delete" class="trashcan" id="trashcan" ondrop="player_drop(event)" ondragover="player_allowDrop(event)">				
-				&#9760; Delete player (drop here)
-			</div>
 		</div>
 		
 		
@@ -109,31 +104,22 @@
 			<div class="table team" id="team1" style="background-color: DodgerBlue;">
 				<!-- team 1 players -->
 			</div>
-			
-			<br/>
 			<div >
-				<input class="big-checkbox" type="checkbox" id="role_lock_enabled" onchange="role_lock_changed();">
-				<label class="big-label" for="role_lock_enabled"> Enable role lock </label>
+				<br/>
+				<div title="Drop player here to make active" class="checkincan" id="checkincan" ondrop="player_drop(event)" ondragover="player_allowDrop(event)">				
+					&#9760; Check-in player (drop here)
+				</div>
 				<br/>
 				<br/>
-				
-				<input value="ReFill & Balance" class="big-btn" type="button" onclick="refill_teams();" title="1. Clear both teams &#013;2. Fill them with random checked-in players. Non-marked players go first. &#013;3. Run a balance."/>
-				<br/>
-				<br/>
-				
-				<input class="big-btn" type="button" id="balance_btn" onclick="balance_teams();" value="&#9878; Balance teams" title="Automatically find most balanced compositions"/>
-				<br/>
-				<br/>
-				
-				<input class="big-btn" type="button" onclick="export_teams_dlg_open();" value="Export teams"/>
+				<div title="Drop player here to make inactive" class="checkoutcan" id="checkoutcan" ondrop="player_drop(event)" ondragover="player_allowDrop(event)">				
+					&#9760; Check-out player (drop here)
+				</div>
 				<br/>
 				<br/>
 				<br/>
-												
-				<input class="big-btn" type="button" id="settings_btn" onclick="settings_dlg_open();" value="&#9881; Settings" title="Open settings dialog"/>
-				<br/>
-				<br/>
-				<br/>
+				<div title="Drop player here to delete" class="trashcan" id="trashcan" ondrop="player_drop(event)" ondragover="player_allowDrop(event)">				
+					&#9760; Delete player (drop here)
+				</div>
 				
 				<div style="display: flex; visibility: hidden">
 					<button class="medium-btn" onclick="add_test_players();">Add test players</button>
@@ -179,8 +165,27 @@
 			<br/>
 			
 			<div >
+				<input class="big-checkbox" type="checkbox" id="role_lock_enabled" onchange="role_lock_changed();">
+				<label class="big-label" for="role_lock_enabled"> Enable role lock </label>
+				<br/>
+				<br/>
 				
-			
+				<input value="ReFill & Balance" class="big-btn" type="button" onclick="refill_teams();" title="1. Clear both teams &#013;2. Fill them with random checked-in players. Non-marked players go first. &#013;3. Run a balance."/>
+				<br/>
+				<br/>
+				
+				<input class="big-btn" type="button" id="balance_btn" onclick="balance_teams();" value="&#9878; Balance teams" title="Automatically find most balanced compositions"/>
+				<br/>
+				<br/>
+				
+				<input class="big-btn" type="button" onclick="export_teams_dlg_open();" value="Export teams"/>
+				<br/>
+				<br/>
+				<br/>
+				<input class="big-btn" type="button" id="settings_btn" onclick="settings_dlg_open();" value="&#9881; Settings" title="Open settings dialog"/>
+				<br/>
+				<br/>
+				<br/>
 				<div style="display: flex">
 					<button class="medium-btn" id="update_active_stats_btn" onclick="update_active_stats();" value="" title="Update stats for active players">&#8635; Update <br/> active players</button>
 				

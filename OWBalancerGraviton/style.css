@@ -189,12 +189,32 @@ span.sr-edited {
 	overflow-x: hidden;
 }
 
+.checkincan {
+    display: inline-block;
+    border: 1px dashed black;
+    vertical-align: middle;
+    width: 100%;
+	line-height: 6em;
+	text-align: center;
+	font-size: 16pt;
+}
+
+.checkoutcan {
+    display: inline-block;
+    border: 1px dashed black;
+    vertical-align: middle;
+    width: 100%;
+	line-height: 6em;
+	text-align: center;
+	font-size: 16pt;
+}
+
 .trashcan {
     display: inline-block;
     border: 1px dashed black;
     vertical-align: middle;
     width: 100%;
-	line-height: 2em;
+	line-height: 1.5em;
 	text-align: center;
 	font-size: 16pt;
 }
