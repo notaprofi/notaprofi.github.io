@@ -75,6 +75,12 @@
 				<div class="table team" id="lobby">
 				</div>
 			</div>
+			<br/>
+			<br/>
+			<br/>
+			<div title="Drop a player here to delete" class="trashcan" id="trashcan" ondrop="player_drop(event)" ondragover="player_allowDrop(event)">				
+				&#9760; Delete a player (drop here)
+			</div>
 		</div>
 		
 		
@@ -106,19 +112,22 @@
 			</div>
 			<div >
 				<br/>
-				<div title="Drop player here to make active" class="checkincan" id="checkincan" ondrop="player_drop(event)" ondragover="player_allowDrop(event)">				
-					&#9760; Check-in player (drop here)
+				<div title="Drop a player here to make active" class="checkincan" id="checkincan" ondrop="player_drop(event)" ondragover="player_allowDrop(event)">				
+					&#9760; Check-in a player (drop here)
 				</div>
 				<br/>
 				<br/>
 				<div title="Drop player here to make inactive" class="checkoutcan" id="checkoutcan" ondrop="player_drop(event)" ondragover="player_allowDrop(event)">				
-					&#9760; Check-out player (drop here)
+					&#9760; Check-out a player (drop here)
 				</div>
 				<br/>
-				<br/>
-				<br/>
-				<div title="Drop player here to delete" class="trashcan" id="trashcan" ondrop="player_drop(event)" ondragover="player_allowDrop(event)">				
-					&#9760; Delete player (drop here)
+				<div style="text-align: center;padding-top: 1.0em;">					
+					<div style="padding-bottom: 0.5em; padding-top: 0.0em;">
+						<span id="checkin_counter">0</span> checked-in
+					</div>
+					<input class="medium-btn" type="button" onclick="manual_checkin_open();" value="Manual check-in"/>
+					
+					<input class="medium-btn" type="button" onclick="reset_checkin();" value="Reset" title="Clear check-in mark for all players"/>
 				</div>
 				
 				<div style="display: flex; visibility: hidden">
@@ -174,12 +183,15 @@
 				<br/>
 				<br/>
 				
-				<input class="big-btn" type="button" id="balance_btn" onclick="balance_teams();" value="&#9878; Balance teams" title="Automatically find most balanced compositions"/>
+				<input class="big-btn" type="button" id="balance_btn" onclick="balance_teams();" value="&#9878; Balance teams" title="Automatically find most balanced compositions among 12 players who're filled in"/>
+				<br/>
+				<br/>
+		
+				<input value="Fill teams" class="big-btn" type="button" onclick="fill_teams();" title="Pick random checked-in players from lobby to fill all empty slots in teams."/>
 				<br/>
 				<br/>
 				
 				<input class="big-btn" type="button" onclick="export_teams_dlg_open();" value="Export teams"/>
-				<br/>
 				<br/>
 				<br/>
 				<input class="big-btn" type="button" id="settings_btn" onclick="settings_dlg_open();" value="&#9881; Settings" title="Open settings dialog"/>
@@ -217,21 +229,6 @@
 		</div>
 		
 		<div class="cell" style="width: 20em;">
-			<fieldset style="text-align: center;">
-				<legend>Check-in</legend>
-				
-				<div style="padding-bottom: 0.5em;">
-					<span id="checkin_counter">0</span> checked-in
-				</div>
-				<input class="medium-btn" type="button" onclick="manual_checkin_open();" value="Manual check-in"/>
-				
-				<input class="medium-btn" type="button" onclick="reset_checkin();" value="Reset" title="Clear check-in mark for all players"/>
-			</fieldset>
-			<br/>
-			
-			<input value="Fill teams" class="big-btn" type="button" onclick="fill_teams();" title="Pick random checked-in players from lobby to fill all empty slots in teams"/>
-			<br/>
-			<br/>
 
 			<div class="tips">
 				<span class="tips-title">
@@ -240,10 +237,17 @@
 					How to use</span>
 				<br>
 				<ul>
+					<li>Note: the latest functionality is tested <strong>only with Role lock on!</strong></li>
 					<li>Add players by full BattleTag (PlayerName#1234 or PlayerName-1234). BattleTags are case-sensitive</li>
-					<li>Move players with <strong>drag & drop</strong> or <strong>double click</strong></li>
-					<li>Click 'Balance teams' to automatically swap players between teams for best balance. Click again to get another combination</li>				
-					<li><strong>Right click</strong> on player to edit name, SR and class</li>
+					<li>Move players from lobby to teams and back with <strong>drag & drop</strong> or <strong>double click</strong></li>
+					<li>Check-in a bunch of players with <strong>'Manual check-in'</strong> button or one by one with <strong>drag & drop</strong></li>
+					<li><strong>Sort</strong> lobby for easier player management</li>
+					<li>Click <strong>'Fill teams'</strong> to put 12 random players in teams</li>	
+					<li>Click <strong>'Balance teams'</strong> to automatically swap players between teams for best balance. Click again to get another combination</li>	
+					<li>Click <strong>'Blue/Red won'</strong> after a match to increase/reduce players SR by the ammount set in the <strong>'Settings'</strong></li>
+					<li>Click <strong>'Mark players'</strong> after a match to mark people who played and make sure noone waits in the queue for too long</li>
+					<li>Click <strong>'ReFill & Balance'</strong> to clear teams; and then fill them randomly, non-marked players go first; It also will balance them</li>				
+					<li><strong>Right click</strong> on a player to edit name, SR and class</li>
 					<li>Player list and all settings are automatically saved in your browser's storage</li>
 				</ul>
 			</div>
