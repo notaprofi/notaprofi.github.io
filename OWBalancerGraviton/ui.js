@@ -1206,23 +1206,6 @@ function player_drop(ev) {
 			checkin_list.delete(dragged_id);
 			save_checkin_list();
 		}
-	
-		redraw_lobby();
-		redraw_teams();
-		return false;
-		/*if (target_id == "checkoutcan" && dragged_team != lobby) { // dragged_team undefined
-			target_team = lobby;
-			target_index = 0;
-			target_player = lobby[target_index];
-			drag_action = "move";
-			target_team = lobby;
-			target_index = lobby.length;
-			target_team.splice(0, 0, dragged_player);
-			dragged_team.splice(dragged_index, 1);
-		}
-		else { 
-			return false;
-		}*/
 	}
 		
 	if( target_id == "trashcan" ) {
@@ -1281,6 +1264,16 @@ function player_drop(ev) {
 				}
 			}
 		}
+	}
+
+	// corrections for the case when we checkout a player, which is in a team - then we need to move them to the lobby
+	if ((target_id == "checkoutcan") && (dragged_team != lobby)) {
+		target_team = lobby;
+		target_index = lobby.length;
+	} else if (target_id == "checkincan" || target_id == "checkoutcan") { // we are done
+		redraw_lobby();
+		redraw_teams();
+		return false;
 	}
 	
 	if (target_id == "") {
