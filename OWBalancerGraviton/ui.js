@@ -1209,8 +1209,13 @@ function player_drop(ev) {
 	}
 		
 	if( target_id == "trashcan" ) {
-		drag_action = "remove";
-		target_id = "";
+		if( confirm("This will delete all the information about "+dragged_id+". Are you sure?") ) {
+			drag_action = "remove";
+			target_id = "";
+		}
+		else {
+			return false;
+		}
 	}
 	
 	// find team and index in team for both players 
