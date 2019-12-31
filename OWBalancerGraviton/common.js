@@ -473,6 +473,11 @@ function sort_players( team, sort_field = 'sr', order_asc=false ) {
 		sort_players( team, 'last_updated', order_asc );
 		sort_field = 'checkin';
 		order_asc = false;
+	} else if (sort_field == 'checkout_date') {
+		sort_players( team, 'display_name', false );
+		sort_players( team, 'last_updated', order_asc );
+		sort_field = 'checkin';
+		order_asc = true;
 	}
 
 	// sort_players

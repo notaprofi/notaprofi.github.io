@@ -1188,26 +1188,7 @@ function player_drop(ev) {
 	}
 	
 	var drag_action = "swap";
-	
-	if (target_id == "checkincan" || target_id == "checkoutcan") {
-		
-		var is_checkedin_alredy = checkin_list.has(dragged_id);
-		if( target_id == "checkincan" && !is_checkedin_alredy ) {
-			// add to checkin
-			checkin_list.add(dragged_id);
-			save_checkin_list();
-		}
 			
-		if( target_id == "checkoutcan" && is_checkedin_alredy ) {
-			// remove from pinned
-			pinned_players.delete(dragged_id);
-			save_pinned_list();
-			// remove from checkin
-			checkin_list.delete(dragged_id);
-			save_checkin_list();
-		}
-	}
-		
 	if( target_id == "trashcan" ) {
 		if( confirm("This will delete all the information about "+dragged_id+". Are you sure?") ) {
 			drag_action = "remove";
@@ -1271,14 +1252,38 @@ function player_drop(ev) {
 		}
 	}
 
-	// corrections for the case when we checkout a player, which is in a team - then we need to move them to the lobby
-	if ((target_id == "checkoutcan") && (dragged_team != lobby)) {
-		target_team = lobby;
-		target_index = lobby.length;
-	} else if (target_id == "checkincan" || target_id == "checkoutcan") { // we are done
-		redraw_lobby();
-		redraw_teams();
-		return false;
+	// check in/out
+	if (target_id == "checkincan" || target_id == "checkoutcan") {
+		
+		var is_checkedin_alredy = checkin_list.has(dragged_id);
+		if( target_id == "checkincan" ) { 
+			if( !is_checkedin_alredy ) {
+				// add to checkin
+				checkin_list.add(dragged_id);
+				save_checkin_list();
+			}
+			dragged_player.last_updated = new Date;
+		}
+			
+		if( target_id == "checkoutcan" && is_checkedin_alredy ) {
+			// remove from pinned
+			pinned_players.delete(dragged_id);
+			save_pinned_list();
+			// remove from checkin
+			checkin_list.delete(dragged_id);
+			save_checkin_list();
+			dragged_player.last_updated = new Date;
+		}
+	
+		// if we checkout a player, which is in a team - then we need to move them to the lobby
+		if ((target_id == "checkoutcan") && (dragged_team != lobby)) {
+			target_team = lobby;
+			target_index = lobby.length;
+		} else { // we are done
+			redraw_lobby();
+			redraw_teams();
+			return false;
+		}
 	}
 	
 	if (target_id == "") {

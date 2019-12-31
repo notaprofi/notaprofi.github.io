@@ -15,7 +15,7 @@
 <script src="owapi.js"></script>
 <script src="stats_updater.js"></script>
 <script src="import_export.js"></script>
-<script src="ui.js"></script>
+<script src="ui.js?bla"></script>
 
 <script src="init.js" defer></script>
 
@@ -45,18 +45,21 @@
 				<input title="Export lobby" type="button" class="team_btn" onclick="export_lobby_dlg_open();" value="Export"/>
 				
 				<div class="dropdown" style="float:right;">
-					<button class="team_btn dropbtn">&uarr;&darr; Sort &#x25BC;</button>
+					<button class="team_btn dropbtn">&uarr;&darr; Misc sort &#x25BC;</button>
 					<div class="dropdown-content">
 						<div onclick="sort_lobby('checkin_name', this);">by check-in & name</div>
-						<div onclick="sort_lobby('checkin_date', this);">by check-in & date</div>
+						<div onclick="sort_lobby('checkin_date', this);">checked-in by date</div>
+						<div onclick="sort_lobby('checkout_date', this);">checked-out by date</div>
 						<div onclick="sort_lobby('display_name', this);">by name</div>
 						<div onclick="sort_lobby('sr', this);">by SR</div>
 						<div onclick="sort_lobby('class', this);">by class</div>
-						<div onclick="sort_lobby('last_updated', this);">by stat update date</div>
+						<div onclick="sort_lobby('last_updated', this);">by last active date</div>
 						<div onclick="sort_lobby('level', this);">by level</div>						
 						<div onclick="shuffle_lobby();">shuffle</div>
 					</div>
 				</div>
+				<input title="Show not checked-in players, who played recently" type="button" class="team_btn" onclick="sort_lobby('checkout_date', this);" value="&uarr;&darr; Afk"/>
+				<input title="Show checked-in players sorted by name" type="button" class="team_btn" onclick="sort_lobby('checkin_name', this);" value="&uarr;&darr; Active"/>
 			</div>
 			
 			<div>
@@ -247,7 +250,7 @@
 					<li>Click <strong>'Blue/Red won'</strong> after a match to increase/reduce players SR by the ammount set in the <strong>'Settings'</strong></li>
 					<li>Click <strong>'Mark players'</strong> after a match to mark people who played and make sure noone waits in the queue for too long</li>
 					<li>Click <strong>'ReFill & Balance'</strong> to clear teams; and then fill them randomly, non-marked players go first; It also will balance them. Click again to get another combination</li>				
-					<li><strong>Right click</strong> on a player to edit name, SR and class</li>
+					<li><strong>Right click</strong> on a player to edit name, SR and class. Or to <strong>Pin</strong> a player and to make sure he always plays</li>
 					<li>Player list and all settings are automatically saved in your browser's storage</li>
 				</ul>
 			</div>
