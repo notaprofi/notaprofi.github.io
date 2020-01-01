@@ -336,6 +336,13 @@ function edit_player_ok() {
 		pinned_players.delete( player_struct.id );
 	}
 	save_pinned_list();
+
+		// mark
+		if ( document.getElementById("dlg_player_marked").checked ) {
+			player_struct.mark = true;
+		} else {
+			player_struct.mark = false;
+		}
 	
 	// check-in
 	if ( document.getElementById("dlg_player_checkin").checked ) {
@@ -1816,7 +1823,9 @@ function fill_player_stats_dlg( clear_errors=true ) {
 	document.getElementById("dlg_player_level").value = player_struct.level;
 	
 	document.getElementById("dlg_player_pinned").checked = pinned_players.has( player_struct.id );
-	
+		
+	document.getElementById("dlg_player_marked").checked = player_struct.mark;
+
 	document.getElementById("dlg_player_checkin").checked = checkin_list.has( player_struct.id );
 	
 	// fill class table	
