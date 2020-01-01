@@ -337,12 +337,12 @@ function edit_player_ok() {
 	}
 	save_pinned_list();
 
-		// mark
-		if ( document.getElementById("dlg_player_marked").checked ) {
-			player_struct.mark = true;
-		} else {
-			player_struct.mark = false;
-		}
+	// mark
+	if ( document.getElementById("dlg_player_marked").checked ) {
+		player_struct.mark = true;
+	} else {
+		player_struct.mark = false;
+	}
 	
 	// check-in
 	if ( document.getElementById("dlg_player_checkin").checked ) {
