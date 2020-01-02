@@ -527,25 +527,31 @@ function sort_players( team, sort_field = 'sr', order_asc=false ) {
 	}
 }
 
-function adjust_players_ranks( team, win ) {
+function adjust_players_ranks( teamW, teamL ) {
 	if ( is_role_lock_enabled() ) {
-		var rank_change = Settings["adjust_SR_after_match_value"];
-		if ( win == 'loss') { 
-			rank_change = -rank_change; 
-		}
+
+		var teamW_sr = calc_team_sr(teamW, teamW);
+		var teamL_sr = calc_team_sr(teamL, teamL);
+		var sr_diff = teamW_sr - teamL_sr;
+
+		var k = Settings["adjust_SR_after_match_value"];
+		var rank_change = Math.round(2*k/(1+Math.pow(10,sr_diff/830)));
 
 		var time = new Date;
-		for( i in team["tank"] ) {
-			team["tank"][i].sr_by_class["tank"] += rank_change;
-			team["tank"][i].last_updated = time;
-		}
-		for( i in team["dps"] ) {
-			team["dps"][i].sr_by_class["dps"] += rank_change;
-			team["dps"][i].last_updated = time;
-		}
-		for( i in team["support"] ) {
-			team["support"][i].sr_by_class["support"] += rank_change;
-			team["support"][i].last_updated = time;
+		for(team of [teamW, teamL]) {
+			for( i in team["tank"] ) {
+				team["tank"][i].sr_by_class["tank"] += rank_change;
+				team["tank"][i].last_updated = time;
+			}
+			for( i in team["dps"] ) {
+				team["dps"][i].sr_by_class["dps"] += rank_change;
+				team["dps"][i].last_updated = time;
+			}
+			for( i in team["support"] ) {
+				team["support"][i].sr_by_class["support"] += rank_change;
+				team["support"][i].last_updated = time;
+			}
+			rank_change = -rank_change;
 		}
 	}
 }

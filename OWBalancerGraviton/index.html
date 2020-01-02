@@ -11,7 +11,7 @@
 <script src="globals.js"></script>
 
 <script src="ow_defines.js"></script>
-<script src="common.js"></script>
+<script src="common.js?bla"></script>
 <script src="owapi.js"></script>
 <script src="stats_updater.js"></script>
 <script src="import_export.js"></script>
@@ -101,7 +101,7 @@
 			</button>
 			<input title="Sort team by name" type="button" class="team_btn" onclick="sort_team(team1, 'display_name');redraw_teams();" value="&uarr;&darr;Az"/>
 			<input title="Sort team by SR" type="button" class="team_btn" onclick="sort_team(team1, 'sr');redraw_teams();" value="&uarr;&darr;123"/>
-			<input title="Adjust SR" type="button" class="team_btn" onclick="adjust_team_ranks(team1_slots, 'win');adjust_team_ranks(team2_slots, 'loss');redraw_teams();" value="Blue won"/>
+			<input title="Adjust SR" type="button" class="team_btn" onclick="adjust_team_ranks(team1_slots, team2_slots);redraw_teams();" value="Blue won"/>
 		    </div>
 			
 			<div>
@@ -161,7 +161,7 @@
 			</button>
 			<input title="Sort team by name" type="button" class="team_btn" onclick="sort_team(team2, 'display_name');redraw_teams();" value="&uarr;&darr;Az"/>
 			<input title="Sort team by SR" type="button" class="team_btn" onclick="sort_team(team2, 'sr');redraw_teams();" value="&uarr;&darr;123"/>
-			<input title="Adjust SR" type="button" class="team_btn" width="100%" onclick="adjust_team_ranks(team1_slots, 'loss');adjust_team_ranks(team2_slots, 'win');redraw_teams();" value="Red won"/>
+			<input title="Adjust SR" type="button" class="team_btn" width="100%" onclick="adjust_team_ranks(team2_slots, team1_slots);redraw_teams();" value="Red won"/>
 			</div>			
 
 			<div>
@@ -548,8 +548,11 @@
 							<input id="update_picked_maxage" name="update_picked_maxage" type="number" size=4 min=0 max=9999 style="width: 4em;" /> days
 							</br>
 
-							<label for="adjust_SR_after_match">Adjust SR after win/loss by </label>
+							<label for="adjust_SR_after_match">Average SR adjust after win/loss: k = </label>
 							<input id="adjust_SR_after_match_value" name="adjust_SR_after_match_value" class="percent" type="number" size=3 min=0 max=999 autocomplete="off" value="50"/>
+						    </br>
+							<label for="update_picked">The exact SR<sub>adjust</sub> = <sup>2k</sup>/<sub>1+10<sup>(SR<sub>winner</sub>-SR<sub>looser</sub>)/830</sup></sup></sup></sub>​ </label>
+							
 						    </br>
 						</div>
 					</div>
