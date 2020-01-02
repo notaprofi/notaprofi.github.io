@@ -155,6 +155,7 @@ function balance_teams() {
 		balance_priority_classic: Settings.balance_priority,
 		classic_sr_calc_method: Settings.sr_calc_method,
 		balance_priority_rolelock: Settings.balance_priority_rolelock,
+		OF_thresold: Settings.balance_vs_variativity_priority,
 	};
 	
 	BalanceWorker.postMessage(["settings", balancer_settings]);

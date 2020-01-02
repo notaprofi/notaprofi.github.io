@@ -630,6 +630,9 @@ input[id="balance_priority_rolelock"]::-moz-range-track {
 input[id="balance_priority_rolelock"]::-webkit-slider-runnable-track {
   background: linear-gradient(to right, #dd3e54, #6be585, #dd3e54);
 }
+input[id="balance_vs_variativity_priority"]::-webkit-slider-runnable-track {
+	background: linear-gradient(to right, #dd3e54, #6be585, #bdffcb);
+  }
 
 .dlg-class-enabled-checkbox {
 	transform: scale(1.5);

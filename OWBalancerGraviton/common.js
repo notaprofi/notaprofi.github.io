@@ -217,6 +217,9 @@ function get_default_settings() {
 		
 		// role lock balancer
 		balance_priority_rolelock: 50,
+
+		// both balancers
+		balance_vs_variativity_priority: 10,
 		
 		// stats updating
 		region: "eu",
