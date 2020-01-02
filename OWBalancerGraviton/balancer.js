@@ -697,7 +697,12 @@ var Balancer = {
 		// factor 3 simply adds huge value if any team has similar one-tricks
 		var team1_sr = this.calcTeamSRRoleLock( this.picked_players_team1, this.class_selection_mask_team1 );
 		var team2_sr = this.calcTeamSRRoleLock( this.picked_players_team2, this.class_selection_mask_team2 );
-		var sr_diff = Math.abs( team1_sr - team2_sr );
+		var sr_diff = Math.abs( team1_sr[0] - team2_sr[0] );
+		var rank_sr_diff = Math.max(
+			Math.abs( team1_sr["tank"] - team2_sr["tank"] ),
+			Math.abs( team1_sr["dps"] - team2_sr["dps"] ), 
+			Math.abs( team1_sr["support"] - team2_sr["support"] )
+			)/2; // 2 is a coeff to balance team vs role sr. Don't take it too litterarly, team sr will always be matched much better than role sr, since there are more combinations
 		
 		var class_mismatch = this.calcClassMismatchRoleLock();
 		
@@ -706,7 +711,7 @@ var Balancer = {
 			otp_conflicts = this.calcOTPConflicts( this.picked_players_team1 ) + this.calcOTPConflicts( this.picked_players_team2 );
 		}
 		
-		var of_value = this.calcObjectiveFunctionValueRoleLock( sr_diff, class_mismatch, otp_conflicts );
+		var of_value = this.calcObjectiveFunctionValueRoleLock( sr_diff, rank_sr_diff, class_mismatch, otp_conflicts );
 		
 		if ( print_debug ) {
 			this.debugMsg ( "team1 sr = " + team1_sr + ", team2 sr = " + team2_sr +", sr diff = "+sr_diff+
@@ -717,14 +722,28 @@ var Balancer = {
 	},
 	
 	calcTeamSRRoleLock: function( team, class_selection_mask ) {
-		var team_sr = 0;
+		var team_sr = [];
+		team_sr[0] = 0;
+		team_sr["tank"] = 0;
+		team_sr["dps"] = 0;
+		team_sr["support"] = 0;
+		var class_count = [];
+		class_count[0] = 0;
+		class_count["tank"] = 0;
+		class_count["dps"] = 0;
+		class_count["support"] = 0;
 		if (team.length > 0) {
 			for( var i=0; i<team.length; i++) {
 				var slot_class = team[i].classes[ class_selection_mask[i] ];
 				var player_sr = this.calcPlayerSRRoleLock( team[i], slot_class );
-				team_sr += player_sr;
+				team_sr[0] += player_sr;
+				team_sr[slot_class] += player_sr;
+				class_count[slot_class] += 1;
 			}
-			team_sr = Math.round(team_sr / this.team_size);
+			team_sr[0] = Math.round(team_sr[0] / this.team_size);
+			team_sr["tank"] = Math.round(team_sr["tank"] / this.team_size);
+			team_sr["dps"] = Math.round(team_sr["dps"] / this.team_size);
+			team_sr["support"] = Math.round(team_sr["support"] / this.team_size);
 		}
 		return team_sr;
 	},
@@ -771,10 +790,10 @@ var Balancer = {
 		return 10 * Math.pow(players_on_offclass, 2);
 	},
 	
-	calcObjectiveFunctionValueRoleLock: function( sr_diff, class_mismatch, otp_conflicts ) {
+	calcObjectiveFunctionValueRoleLock: function( sr_diff, rank_sr_diff, class_mismatch, otp_conflicts ) {
 		var OF = 
-			(class_mismatch * this.balance_priority_rolelock
-			+ (sr_diff/this.balance_max_sr_diff*100)*(100-this.balance_priority_rolelock)
+			(class_mismatch * this.balance_priority_rolelock*33/50
+			+ ((sr_diff+rank_sr_diff)*100/2/this.balance_max_sr_diff)*(100-this.balance_priority_rolelock*33/50)
 			+ otp_conflicts )
 			/100 ;
 		return round_to( OF, 1 );
