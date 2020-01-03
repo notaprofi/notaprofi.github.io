@@ -545,14 +545,17 @@ function adjust_players_ranks( teamW, teamL ) {
 			for( i in team["tank"] ) {
 				team["tank"][i].sr_by_class["tank"] += rank_change;
 				team["tank"][i].last_updated = time;
+				team["tank"][i].playtime_by_class["tank"] += 0.25;
 			}
 			for( i in team["dps"] ) {
 				team["dps"][i].sr_by_class["dps"] += rank_change;
 				team["dps"][i].last_updated = time;
+				team["dps"][i].playtime_by_class["dps"] += 0.25;
 			}
 			for( i in team["support"] ) {
 				team["support"][i].sr_by_class["support"] += rank_change;
 				team["support"][i].last_updated = time;
+				team["support"][i].playtime_by_class["support"] += 0.25;
 			}
 			rank_change = -rank_change;
 		}
