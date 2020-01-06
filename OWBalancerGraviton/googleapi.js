@@ -24,13 +24,13 @@ function ConditionalSignIn() {
 	}
 
 	if (Settings["data_sreadsheet"] == "") {
-		gapi.auth2.getAuthInstance().signOut().then(
+		/*gapi.auth2.getAuthInstance().signOut().then(
 			function () { 
 				document.getElementById('SingIn_Message').style.display = 'none';
 				gapiIsSignedIn = false;
 			}, function(error) {
 				alert("Client signout: " + JSON.stringify(error, null, 2));
-			});
+			});*/
 		return false;
 	}
 	if( gapiIsSignedIn ) {
