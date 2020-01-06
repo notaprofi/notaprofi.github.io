@@ -87,10 +87,10 @@ if ( saved_settings_json != null ) {
 apply_stats_updater_settings();
 
 // restore role lock option 
-stored_value = JSON.parse( localStorage.getItem(storage_prefix+"role_lock_enabled") );
-if ( stored_value !== null ) {
-	document.getElementById("role_lock_enabled").checked = stored_value;
-}
+//stored_value = JSON.parse( localStorage.getItem(storage_prefix+"role_lock_enabled") );
+//if ( stored_value !== null ) {
+//	document.getElementById("role_lock_enabled").checked = stored_value;
+//}
 
 // restore pinned list
 stored_value = localStorage.getItem(storage_prefix+"pinned_players");

@@ -42,3 +42,8 @@ var BalanceWorker = undefined;
 // lobby sorting options
 var lobby_order_inverse = false;
 var lobby_sort_field = 'checkin_name';
+
+// is signed into google acc for sync
+var gapiIsSignedIn = false;
+// is syncing already in process
+var isSyncing = false;

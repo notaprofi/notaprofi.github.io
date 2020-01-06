@@ -11,28 +11,33 @@
 <script src="globals.js"></script>
 
 <script src="ow_defines.js"></script>
-<script src="common.js?blabla"></script>
+<script src="common.js?bla"></script>
 <script src="owapi.js"></script>
+<script src="https://apis.google.com/js/api.js"></script>
+<script src="googleapi.js?blabla"></script>
 <script src="stats_updater.js"></script>
-<script src="import_export.js"></script>
-<script src="ui.js?blabla"></script>
+<script src="import_export.js?blabla"></script>
+<script src="ui.js?blablabla"></script>
 
 <script src="init.js" defer></script>
 
 </head>
 
-<body>
+<body onload="handleClientLoad();setTimeout(function(){ConditionalSignIn();},1500)" onreadystatechange="handleClientLoad();setTimeout(function(){ConditionalSignIn();},1500)">
+
 
 <div class="page-title">Overwatch custom games balancer. Discord server edition.</div>
 <div class="copyright">2019-2020 by <a href="https://github.com/notaprofi">notaprofi</a> | 2017-2019 by <a href="https://github.com/adminimusRU">l33t m3at</a> | Stats data by <a href="https://github.com/SunDwarf/OWAPI">OWAPI</a></div>
 <br/>
-
+<div id="SingIn_Message" style="display: none; color: rgb(139, 0, 0); font: bold 12pt sans-serif;">Sync is ON</div>
 <br/>
 <span style="color: green; text-shadow: 0 0 3px green; font: bold 22pt sans-serif; vertical-align: sub;">+</span>
 <input id="new_player_id" name="new_player_id" type="text" size=35 placeholder="BattleTag" value="" onkeyup="new_player_keyup(event);"/> 
 <button onclick="add_player_click();" id="add_btn" >Add player</button>
+
 <br/>
 <br/>
+
 
 <div class="table workspace">
 	<div class="row">
@@ -116,12 +121,12 @@
 			<div >
 				<br/>
 				<div title="Drop a player here to make active" class="checkincan" id="checkincan" ondrop="player_drop(event)" ondragover="player_allowDrop(event)">				
-					&#9760; Check-in a player (drop here)
+					<span style="color: #006b00;">&#10004;</span> Check-in a player (drop here)
 				</div>
 				<br/>
 				<br/>
 				<div title="Drop player here to make inactive" class="checkoutcan" id="checkoutcan" ondrop="player_drop(event)" ondragover="player_allowDrop(event)">				
-					&#9760; Check-out a player (drop here)
+					<span style="color: #a80000;">&#10008;</span> Check-out a player (drop here)
 				</div>
 				<br/>
 				<div style="text-align: center;padding-top: 1.0em;">					
@@ -177,10 +182,8 @@
 			<br/>
 			
 			<div >
-				<input class="big-checkbox" type="checkbox" id="role_lock_enabled" onchange="role_lock_changed();">
-				<label class="big-label" for="role_lock_enabled"> Enable role lock </label>
-				<br/>
-				<br/>
+				<!-- input class="big-checkbox" type="checkbox" id="role_lock_enabled" onchange="role_lock_changed();" --> 
+				<!-- label class="big-label" for="role_lock_enabled"> Enable role lock <label -->
 				
 				<input value="ReFill & Balance" class="big-btn" type="button" onclick="refill_teams();" title="1. Clear both teams &#013;2. Fill them with random checked-in players. Non-marked players go first. &#013;3. Run a balance."/>
 				<br/>
@@ -552,7 +555,10 @@
 							<input id="adjust_SR_after_match_value" name="adjust_SR_after_match_value" class="percent" type="number" size=3 min=0 max=999 autocomplete="off" value="50"/>
 						    </br>
 							<label for="update_picked">The exact SR<sub>adjust</sub> = <sup>2k</sup>/<sub>1+10<sup>(SR<sub>winner</sub>-SR<sub>looser</sub>)/830</sup></sup></sup></sub>​ </label>
-							
+							</br>
+							<label for="data_sreadsheet">SpreadsheetId: </label>
+							<input id="data_sreadsheet" type="text" size=15 autocomplete="off" value=""/>
+							<label for="data_sreadsheet">(make it void if you don't want to sync with a googlespreadsheet)</label>
 						    </br>
 						</div>
 					</div>

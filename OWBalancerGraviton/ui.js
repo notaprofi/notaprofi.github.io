@@ -52,7 +52,6 @@ function add_test_players() {
 		added_players.push( new_player.id );
 	}
 
-	save_players_list();
 	redraw_lobby();
 	
 	// highlight all new players and scroll to show last one
@@ -134,7 +133,6 @@ function apply_settings() {
 	close_dialog( "popup_dlg_settings" );
 	
 	if (teams_changed) {
-		save_players_list();
 		redraw_lobby();
 		redraw_teams();
 	}
@@ -201,7 +199,6 @@ function clear_lobby() {
 			pinned_players.delete(player_to_delete.id);
 		}
 		
-		save_players_list();
 		save_checkin_list();
 		save_pinned_list();
 		redraw_lobby();
@@ -251,11 +248,14 @@ function edit_player_ok() {
 		return;
 	}
 	
+	var is_param_changes_made = false;
+
 	var player_struct = player_being_edited;
 	
 	var new_name = document.getElementById("dlg_player_display_name").value;
 	if ( player_struct.display_name != new_name ) {
 		player_struct.ne = true; // name edited
+		is_param_changes_made = true;
 	}
 	player_struct.display_name = new_name;
 	
@@ -276,6 +276,7 @@ function edit_player_ok() {
 		
 		if ( old_sr != new_sr ) {
 			player_struct.se = true; // sr edited mark
+			is_param_changes_made = true;
 			break;
 		}
 	}
@@ -296,6 +297,7 @@ function edit_player_ok() {
 		var old_index = player_struct.classes.indexOf( new_classes[i] );
 		if ( old_index != i ) {
 			player_struct.ce = true;
+			is_param_changes_made = true;
 			break;
 		}
 	}
@@ -303,6 +305,7 @@ function edit_player_ok() {
 		var new_index = new_classes.indexOf( player_struct.classes[i] );
 		if ( new_index != i ) {
 			player_struct.ce = true;
+			is_param_changes_made = true;
 			break;
 		}
 	}
@@ -352,6 +355,12 @@ function edit_player_ok() {
 		checkin_list.delete( player_struct.id );
 	}
 	save_checkin_list();
+
+	// update time
+	if( is_param_changes_made ) {
+		player_struct.last_updated = new Date;
+		player_struct.downloaded = false;
+	}
 	
 	close_dialog("popup_dlg_edit_player");
 	save_players_list();
@@ -607,7 +616,6 @@ function fill_teams(unmarked_only = false) {
 		}
 	}
 	
-	save_players_list();
 	redraw_lobby();
 	redraw_teams();
 	if(unmarked_only) fill_teams(false);
@@ -643,7 +651,6 @@ function generate_random_players() {
 		lobby.push( new_player );
 	}
 
-	save_players_list();
 	redraw_lobby();
 }
 
@@ -733,7 +740,6 @@ function move_team_to_lobby(team, team_slots) {
 	}
 	
 	//update_captains();
-	save_players_list();
 	redraw_lobby();
 	redraw_teams();
 }
@@ -780,7 +786,7 @@ function reset_settings() {
 	fill_settings_dlg( get_default_settings() );
 }
 
-function role_lock_changed() {
+/*function role_lock_changed() {
 	localStorage.setItem(storage_prefix+"role_lock_enabled", document.getElementById("role_lock_enabled").checked );
 	
 	// move all players from slots to arrays	
@@ -829,7 +835,7 @@ function role_lock_changed() {
 	}
 	
 	redraw_teams();
-}
+}*/
 
 function settings_dlg_open() {
 	fill_settings_dlg( Settings );
@@ -838,7 +844,6 @@ function settings_dlg_open() {
 
 function shuffle_lobby() {
 	lobby = array_shuffle( lobby );
-	save_players_list();
 	redraw_lobby();
 }
 
@@ -1043,6 +1048,29 @@ function manual_checkin_toggle_player( tr, cbox ) {
 		checkin_list.add(player_id);
 		save_checkin_list();
 		tr.classList.toggle("checked", true);
+
+			//--- change date
+		// look in lobby
+		var li = lobby.findIndex(function(p, index, array) {
+			return p.id == player_id;
+		});
+		if (li >= 0) {
+			lobby[li].last_updated = new Date();
+			lobby[li].downloaded = false;
+		}
+	
+		// look in role lock teams
+		for ( let team_slots of [team1_slots, team2_slots] ) {
+			for ( let class_name in team_slots ) {
+				for( var i=0; i<team_slots[class_name].length; i++) {
+					if ( team_slots[class_name][i].id == player.id) {
+						team_slots[class_name][i].last_updated = new Date();
+						team_slots[class_name][i].downloaded = false;
+					}
+				}
+			}
+		}
+		// todo: clasic
 	} else {
 		checkin_list.delete(player_id);
 		save_checkin_list();
@@ -1174,7 +1202,6 @@ function player_dblClick(ev) {
 	new_team.push( selected_player );
 	selected_team.splice(selected_index, 1);
 	
-	save_players_list();
 	redraw_lobby();
 	redraw_teams();
 }
@@ -1271,6 +1298,7 @@ function player_drop(ev) {
 				save_checkin_list();
 			}
 			dragged_player.last_updated = new Date;
+			dragged_player.downloaded = false;
 		}
 			
 		if( target_id == "checkoutcan" && is_checkedin_alredy ) {
@@ -1280,7 +1308,6 @@ function player_drop(ev) {
 			// remove from checkin
 			checkin_list.delete(dragged_id);
 			save_checkin_list();
-			dragged_player.last_updated = new Date;
 		}
 	
 		// if we checkout a player, which is in a team - then we need to move them to the lobby
@@ -1366,7 +1393,6 @@ function player_drop(ev) {
 		}
 	}
 	
-	save_players_list();
 	redraw_lobby();
 	redraw_teams();
 }
@@ -1402,8 +1428,8 @@ function on_balance_worker_message(e) {
 		var result_struct = e.data[1];
 		
 		if ( result_struct.is_successfull ) {
-			document.getElementById("role_lock_enabled").checked = result_struct.is_rolelock;
-			localStorage.setItem(storage_prefix+"role_lock_enabled", result_struct.is_rolelock );
+			//document.getElementById("role_lock_enabled").checked = result_struct.is_rolelock;
+			//localStorage.setItem(storage_prefix+"role_lock_enabled", result_struct.is_rolelock );
 			
 			// copy references to players from balancer to global teams
 			team1 = result_struct.team1.slice();
@@ -1454,7 +1480,6 @@ function on_player_stats_updated( player_id ) {
 			}
 
 			target_team.push( player_being_added );
-			save_players_list();
 			redraw_lobby();
 			redraw_teams();
 			highlight_player( player_id );
@@ -1510,7 +1535,6 @@ function on_stats_update_error( player_id, error_msg, is_changed ) {
 					target_team = lobby;
 				}				
 				target_team.push( new_player );
-				save_players_list();
 				redraw_lobby();
 				redraw_teams();
 				highlight_player( player_id );
@@ -1626,8 +1650,12 @@ function draw_player_cell( player_struct, small=false, is_captain=false, slot_cl
 	var br_node;
 	
 	var new_player_item = document.createElement("div");
-	if(player_struct.mark) {
-	  new_player_item.style.backgroundColor = "#88cc88";
+	if(player_struct.downloaded && player_struct.mark) {
+		new_player_item.style.background = "linear-gradient(to right, #ff55ff 0%, #55ff55 100%)";
+	} else if(player_struct.downloaded) {
+		new_player_item.style.backgroundColor = "#ffccff"; // purple
+	} else if(player_struct.mark) {
+		new_player_item.style.backgroundColor = "#88cc88"; // green
     }
 
 	new_player_item.className = "cell player-item";
@@ -2187,7 +2215,6 @@ function reset_roll() {
 	}
 	teams.splice( 0, teams.length );
 	
-	save_players_list();
 	redraw_lobby();
 	redraw_teams();
 }

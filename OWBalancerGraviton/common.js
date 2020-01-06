@@ -66,6 +66,8 @@ function create_empty_player() {
 			top_heroes: [],
 			last_updated: new Date(0),
 			private_profile: false,
+			mark: false,
+			downloaded: false,
 		};
 	
 	for( let class_name of class_names ) {
@@ -229,6 +231,8 @@ function get_default_settings() {
 		update_picked: true,
 		update_picked_maxage: 15,
 		adjust_SR_after_match_value: 50,
+
+		data_sreadsheet: "",
 	};
 	
 	for ( let class_name of class_names ) {
@@ -432,7 +436,7 @@ function is_undefined( expr, if_undefined ) {
 }
 
 function is_role_lock_enabled() {
-	return document.getElementById("role_lock_enabled").checked;
+	return true; //document.getElementById("role_lock_enabled").checked;
 }
 
 function print_date( date_value ) {
@@ -546,16 +550,19 @@ function adjust_players_ranks( teamW, teamL ) {
 				team["tank"][i].sr_by_class["tank"] += rank_change;
 				team["tank"][i].last_updated = time;
 				team["tank"][i].playtime_by_class["tank"] += 0.25;
+				team["tank"][i].downloaded = false;
 			}
 			for( i in team["dps"] ) {
 				team["dps"][i].sr_by_class["dps"] += rank_change;
 				team["dps"][i].last_updated = time;
 				team["dps"][i].playtime_by_class["dps"] += 0.25;
+				team["dps"][i].downloaded = false;
 			}
 			for( i in team["support"] ) {
 				team["support"][i].sr_by_class["support"] += rank_change;
 				team["support"][i].last_updated = time;
 				team["support"][i].playtime_by_class["support"] += 0.25;
+				team["support"][i].downloaded = false;
 			}
 			rank_change = -rank_change;
 		}
