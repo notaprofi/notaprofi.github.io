@@ -46,7 +46,7 @@ function ConditionalSignIn() {
 	return true;
 }
 	
-function SyncPlayersWithTheSpreadsheet (players,team1_slots,team2_slots) {
+function SyncPlayersWithTheSpreadsheet (players,team1_slots,team2_slots,reset_syncIsPromised=false) {
 	// making sure we are connected to the spreadsheet
 	if( !ConditionalSignIn() ) {
 		return false;
@@ -62,19 +62,36 @@ function SyncPlayersWithTheSpreadsheet (players,team1_slots,team2_slots) {
 	}
 
 	// making sure only one call of SyncPlayersWithTheSpreadsheet is working symultaniously
-	if(isSyncing==true) { // last sync isn't finished, so this one will be canceled
+	if(!isSyncing) { // everything is ok
+		isSyncing = true;
+		
+		if(reset_syncIsPromised) {
+			console.log("Pcall");
+		} else {
+			console.log("call");
+		}
+	} else { // last sync isn't finished, so this one will be canceled
+	/* TODO: atm some data may not be synced
 		if(!syncIsPromised) {
 			syncIsPromised = true;
 			var promise = new Promise( function(resolve,reject) {
+				console.log("Promise set");
 				setTimeout(function() {
-					SyncPlayersWithTheSpreadsheet (players,team1_slots,team2_slots); 
-					syncIsPromised = false; 	
+					console.log("Promise started");
+					SyncPlayersWithTheSpreadsheet (players,team1_slots,team2_slots,true); 
+					console.log("Promise finished");
 				}, 3000);
 			});
+		} else if(reset_syncIsPromised) { 
+			// this is the call from the promise. 
+			// But there is already another sync is going on, 
+			// this another sync should be enough, so we finish the promise
+			syncIsPromised = false;
+			console.log("True Promise finished");
 		}
+		*/
 		return false; 
 	}
-	isSyncing = true;
 
 	// converting data to the spreadsheetformat
 	var players_here = [];
@@ -150,10 +167,18 @@ function SyncPlayersWithTheSpreadsheet (players,team1_slots,team2_slots) {
 			}).then((response) => {
 
 				isSyncing = false;
+				if(reset_syncIsPromised) {
+					syncIsPromised = false;
+					console.log("True Promise finished");
+				}
 
 			},(response) => {
 
 				isSyncing = false;
+				if(reset_syncIsPromised) {
+					syncIsPromised = false;
+					console.log("True Promise finished");
+				}
 				alert('ErrorWrite: ' + response.result.error.message);
 
 			}); 
@@ -161,6 +186,10 @@ function SyncPlayersWithTheSpreadsheet (players,team1_slots,team2_slots) {
 	  }, function(response) {
 
 		isSyncing = false;
+		if(reset_syncIsPromised) {
+			syncIsPromised = false;
+			console.log("True Promise finished");
+		}
 		alert('ErrorRead: ' + response.result.error.message);
 	  });
 }
