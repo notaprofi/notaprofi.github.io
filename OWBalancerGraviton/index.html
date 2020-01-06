@@ -29,7 +29,15 @@
 <div class="page-title">Overwatch custom games balancer. Discord server edition.</div>
 <div class="copyright">2019-2020 by <a href="https://github.com/notaprofi">notaprofi</a> | 2017-2019 by <a href="https://github.com/adminimusRU">l33t m3at</a> | Stats data by <a href="https://github.com/SunDwarf/OWAPI">OWAPI</a></div>
 <br/>
-<div id="SingIn_Message" style="display: none; color: rgb(139, 0, 0); font: bold 12pt sans-serif;">Sync is ON</div>
+<section style="display: width: 50%;">
+<div id="SingIn_Message" style="float: left; width: 15%; display: none; color: rgb(139, 0, 0); font: bold 12pt sans-serif;">
+	Sync is ON
+</div>
+<div id="conflict_button_div" style="float: left; width: 35%; display: none; color: rgb(226, 0, 0); font: bold 10pt sans-serif;">
+	You were pressing buttons too fast, some data may be not syncronized with the server. 
+	<button id="conflict_button" style="color: rgb(226, 0, 0);" onclick="SyncPlayersWithTheSpreadsheet(lobby,team1_slots,team2_slots);">Syncronize</button>
+</div>
+</section>
 <br/>
 <span style="color: green; text-shadow: 0 0 3px green; font: bold 22pt sans-serif; vertical-align: sub;">+</span>
 <input id="new_player_id" name="new_player_id" type="text" size=35 placeholder="BattleTag" value="" onkeyup="new_player_keyup(event);"/> 

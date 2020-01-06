@@ -47,3 +47,4 @@ var lobby_sort_field = 'checkin_name';
 var gapiIsSignedIn = false;
 // is syncing already in process
 var isSyncing = false;
+var syncIsPromised = false;

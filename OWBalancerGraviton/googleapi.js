@@ -62,8 +62,19 @@ function SyncPlayersWithTheSpreadsheet (players,team1_slots,team2_slots) {
 	}
 
 	// making sure only one call of SyncPlayersWithTheSpreadsheet is working symultaniously
-	//while(isSyncing==true) {} 
-	//isSyncing=true;
+	if(isSyncing==true) { // last sync isn't finished, so this one will be canceled
+		if(!syncIsPromised) {
+			syncIsPromised = true;
+			var promise = new Promise( function(resolve,reject) {
+				setTimeout(function() {
+					SyncPlayersWithTheSpreadsheet (players,team1_slots,team2_slots); 
+					syncIsPromised = false; 	
+				}, 3000);
+			});
+		}
+		return false; 
+	}
+	isSyncing = true;
 
 	// converting data to the spreadsheetformat
 	var players_here = [];
@@ -138,16 +149,18 @@ function SyncPlayersWithTheSpreadsheet (players,team1_slots,team2_slots) {
 				resource: body
 			}).then((response) => {
 
-				//isSyncing = false;
+				isSyncing = false;
 
 			},(response) => {
 
+				isSyncing = false;
 				alert('ErrorWrite: ' + response.result.error.message);
-				//isSyncing = false;
 
 			}); 
 
 	  }, function(response) {
+
+		isSyncing = false;
 		alert('ErrorRead: ' + response.result.error.message);
 	  });
 }
