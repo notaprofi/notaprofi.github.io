@@ -68,7 +68,6 @@ function SyncPlayersWithTheSpreadsheet() {
 		range: table_range,
 	  }).then( function(response) {
 
-		console.log("convert");
 		// converting data to the spreadsheetformat
 		var players_here = [];
 		var length = 12; // from A column to L column
@@ -90,9 +89,8 @@ function SyncPlayersWithTheSpreadsheet() {
 			return player1[0].localeCompare(player2[0]); // sort by id
 		} );
 
-		console.log("comparing");
 		// comparing local data with the server data
-		var is_news_on_server = false;
+		let is_news_here = false;
 		var range = response.result;
 		if (typeof(range.values) !== 'undefined' && range.values.length > 0) {
 		  for (i = 0; i < range.values.length; i++) {
@@ -104,7 +102,6 @@ function SyncPlayersWithTheSpreadsheet() {
 			if ( j==-1 ) { // there is a new player on the server
 				players_here.push(player_on_server);
 				lobby.push( SpreadsheetToPlayer(player_on_server) ); // read new player to lobby
-				is_news_on_server = true;
 			} else {
 				// compare dates
 				var date_on_server = new Date(player_on_server[length-1]);
@@ -112,7 +109,19 @@ function SyncPlayersWithTheSpreadsheet() {
 					player_on_server[length-1] = date_on_server;
 					players_here[j] = player_on_server;
 					UpdatePlayer( SpreadsheetToPlayer(player_on_server) );
-					is_news_on_server = true;
+				} else if( players_here[j][length-1] > date_on_server ) {
+					is_news_here = true;
+				}
+			}
+		  }
+		  if(!is_news_here) { // check if there are new players locally
+			for (i = 0; i < players_here.length; i++) {
+				var player_here = players_here[i];
+				var j = range.values.findIndex( function(p, index, array) {
+					return p[0] == player_here[0]; // compare id's
+				});
+				if ( j==-1 ) {
+					is_news_here = true;
 				}
 			}
 		  }
@@ -120,33 +129,34 @@ function SyncPlayersWithTheSpreadsheet() {
 		  alert('No data found in the spreadsheet.');
 		}
 
-		players_here.sort( function(player1, player2) { // sort again, in case there were new players on the server
-			return player1[0].localeCompare(player2[0]);
-		} );
-
-		  // putting our changes in
-		var body = {
-			values: players_here
-		};
-	  
-		gapi.client.sheets.spreadsheets.values.update(
-			{
-				spreadsheetId: spreadsheetIdHelper[1],
-				range: 'Players!A2',
-				valueInputOption: 'RAW',
-				resource: body
-			}).then((response) => {
-
-			},(response) => {
-
-				alert('ErrorWrite: ' + response.result.error.message);
-
-			}); 
-
+		// putting our changes in
+		if(is_news_here) {
+			players_here.sort( function(player1, player2) { // sort again, in case there were new players on the server
+				return player1[0].localeCompare(player2[0]);
+			} );
+	
+			var body = {
+				values: players_here
+			};
+		  
+			gapi.client.sheets.spreadsheets.values.update(
+				{
+					spreadsheetId: spreadsheetIdHelper[1],
+					range: 'Players!A2',
+					valueInputOption: 'RAW',
+					resource: body
+				}).then((response) => {
+	
+				},(response) => {
+	
+					alert('ErrorWrite: ' + response.result.error.message);
+	
+				}); 
+		}
 	  }, function(response) {
 
 		alert('ErrorRead: ' + response.result.error.message);
-		
+
 	  });
 }
 
