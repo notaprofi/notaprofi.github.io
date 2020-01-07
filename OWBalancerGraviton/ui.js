@@ -698,9 +698,14 @@ function manual_checkin_open() {
 		}
 		cell.appendChild(cbox);
 		row.appendChild(cell);
+
+		cell = document.createElement("td");
+		var cellText = document.createTextNode( format_player_id(lobby[i].display_name) );
+		cell.appendChild(cellText);
+		row.appendChild(cell);
 		
 		cell = document.createElement("td");
-		var cellText = document.createTextNode( format_player_id(lobby[i].id) );
+		cellText = document.createTextNode( format_player_id(lobby[i].id) );
 		cell.appendChild(cellText);
 		row.appendChild(cell);
 		
