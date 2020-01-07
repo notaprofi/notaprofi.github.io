@@ -35,7 +35,7 @@
 </div>
 <div id="conflict_button_div" style="float: left; width: 35%; display: none; color: rgb(226, 0, 0); font: bold 10pt sans-serif;">
 	You were pressing buttons too fast, some data may be not syncronized with the server. 
-	<button id="conflict_button" style="color: rgb(226, 0, 0);" onclick="SyncPlayersWithTheSpreadsheet(lobby,team1_slots,team2_slots);">Syncronize</button>
+	<button id="conflict_button" style="color: rgb(226, 0, 0);" onclick="SyncPlayersWithTheSpreadsheet();">Syncronize</button>
 </div>
 </section>
 <br/>
@@ -564,9 +564,9 @@
 						    </br>
 							<label for="update_picked">The exact SR<sub>adjust</sub> = <sup>2k</sup>/<sub>1+10<sup>(SR<sub>winner</sub>-SR<sub>looser</sub>)/830</sup></sup></sup></sub>​ </label>
 							</br>
-							<label for="data_sreadsheet">SpreadsheetId: </label>
-							<input id="data_sreadsheet" type="text" size=15 autocomplete="off" value=""/>
-							<label for="data_sreadsheet">(make it void if you don't want to sync with a googlespreadsheet)</label>
+							<label for="data_sreadsheet">Spreadsheet URL: </label>
+							<input id="data_sreadsheet" type="text" size=35 autocomplete="off" value=""/>
+							<label for="data_sreadsheet">(Clear this field if you don't want to sync with a spreadsheet)</label>
 						    </br>
 						</div>
 					</div>

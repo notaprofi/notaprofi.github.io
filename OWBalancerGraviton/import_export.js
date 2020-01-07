@@ -580,5 +580,5 @@ function save_players_list() {
 	localStorage.setItem(storage_prefix+"team1_slots", JSON.stringify(team1_slots));
 	localStorage.setItem(storage_prefix+"team2_slots", JSON.stringify(team2_slots));
 	localStorage.setItem(storage_prefix+"saved_format", current_format_version());
-	SyncPlayersWithTheSpreadsheet(lobby, team1_slots, team2_slots);
+	SyncPlayersWithTheSpreadsheet();
 }

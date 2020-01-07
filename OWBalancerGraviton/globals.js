@@ -45,6 +45,3 @@ var lobby_sort_field = 'checkin_name';
 
 // is signed into google acc for sync
 var gapiIsSignedIn = false;
-// is syncing already in process
-var isSyncing = false;
-var syncIsPromised = false;

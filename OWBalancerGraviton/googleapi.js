@@ -46,7 +46,7 @@ function ConditionalSignIn() {
 	return true;
 }
 	
-function SyncPlayersWithTheSpreadsheet (players,team1_slots,team2_slots,reset_syncIsPromised=false) {
+function SyncPlayersWithTheSpreadsheet() {
 	// making sure we are connected to the spreadsheet
 	if( !ConditionalSignIn() ) {
 		return false;
@@ -61,66 +61,37 @@ function SyncPlayersWithTheSpreadsheet (players,team1_slots,team2_slots,reset_sy
 		return false;
 	}
 
-	// making sure only one call of SyncPlayersWithTheSpreadsheet is working symultaniously
-	if(!isSyncing) { // everything is ok
-		isSyncing = true;
-		
-		if(reset_syncIsPromised) {
-			console.log("Pcall");
-		} else {
-			console.log("call");
-		}
-	} else { // last sync isn't finished, so this one will be canceled
-	/* TODO: atm some data may not be synced
-		if(!syncIsPromised) {
-			syncIsPromised = true;
-			var promise = new Promise( function(resolve,reject) {
-				console.log("Promise set");
-				setTimeout(function() {
-					console.log("Promise started");
-					SyncPlayersWithTheSpreadsheet (players,team1_slots,team2_slots,true); 
-					console.log("Promise finished");
-				}, 3000);
-			});
-		} else if(reset_syncIsPromised) { 
-			// this is the call from the promise. 
-			// But there is already another sync is going on, 
-			// this another sync should be enough, so we finish the promise
-			syncIsPromised = false;
-			console.log("True Promise finished");
-		}
-		*/
-		return false; 
-	}
-
-	// converting data to the spreadsheetformat
-	var players_here = [];
-	var length = 12; // from A column to L column
-	for (player of players) {
-		var p_here = PlayerToSpreadsheet(player);
-		players_here.push(p_here);
-	}
-
-	for ( let team_slots of [team1_slots, team2_slots] ) {
-		for ( let class_name in team_slots ) {
-			for( var i=0; i<team_slots[class_name].length; i++) {
-				var p_here = PlayerToSpreadsheet(team_slots[class_name][i]);
-				players_here.push(p_here);
-			}
-		}
-	}
-
-	players_here.sort( function(player1, player2){
-		return player1[0].localeCompare(player2[0]); // sort by id
-	} );
-
 	// making sure we've downloaded all the changes made by other people
-	var table_range = 'Players!A2:L'+(players_here.length+20+1).toString(); // read 20 extra lines, just in case there are new players
+	var table_range = 'Players!A2:L'+(lobby.length+12+20+1).toString(); // read 20 extra lines, just in case there are new players
 	gapi.client.sheets.spreadsheets.values.get({
 		spreadsheetId: spreadsheetIdHelper[1],
 		range: table_range,
 	  }).then( function(response) {
 
+		console.log("convert");
+		// converting data to the spreadsheetformat
+		var players_here = [];
+		var length = 12; // from A column to L column
+		for (player of lobby) {
+			var p_here = PlayerToSpreadsheet(player);
+			players_here.push(p_here);
+		}
+	
+		for ( let team_slots of [team1_slots, team2_slots] ) {
+			for ( let class_name in team_slots ) {
+				for( var i=0; i<team_slots[class_name].length; i++) {
+					var p_here = PlayerToSpreadsheet(team_slots[class_name][i]);
+					players_here.push(p_here);
+				}
+			}
+		}
+	
+		players_here.sort( function(player1, player2){
+			return player1[0].localeCompare(player2[0]); // sort by id
+		} );
+
+		console.log("comparing");
+		// comparing local data with the server data
 		var is_news_on_server = false;
 		var range = response.result;
 		if (typeof(range.values) !== 'undefined' && range.values.length > 0) {
@@ -166,31 +137,16 @@ function SyncPlayersWithTheSpreadsheet (players,team1_slots,team2_slots,reset_sy
 				resource: body
 			}).then((response) => {
 
-				isSyncing = false;
-				if(reset_syncIsPromised) {
-					syncIsPromised = false;
-					console.log("True Promise finished");
-				}
-
 			},(response) => {
 
-				isSyncing = false;
-				if(reset_syncIsPromised) {
-					syncIsPromised = false;
-					console.log("True Promise finished");
-				}
 				alert('ErrorWrite: ' + response.result.error.message);
 
 			}); 
 
 	  }, function(response) {
 
-		isSyncing = false;
-		if(reset_syncIsPromised) {
-			syncIsPromised = false;
-			console.log("True Promise finished");
-		}
 		alert('ErrorRead: ' + response.result.error.message);
+		
 	  });
 }
 
