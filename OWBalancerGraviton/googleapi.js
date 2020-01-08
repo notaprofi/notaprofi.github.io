@@ -62,7 +62,7 @@ function GetSpreadsheet() { // making sure we are connected to the spreadsheet
 	return spreadsheetIdHelper[1];
 }
 	
-function SyncPlayersWithTheSpreadsheet() {
+function SyncPlayersWithTheSpreadsheet(download_data=true) {
 	var spreadsheet = GetSpreadsheet();
 	if( spreadsheet === false ) {
 		return false;
@@ -137,7 +137,7 @@ function SyncPlayersWithTheSpreadsheet() {
 		}
 
 		// putting our changes in
-		if(is_news_here) {
+		if(download_data && is_news_here) {
 			players_here.sort( function(player1, player2) { // sort again, in case there were new players on the server
 				return player1[0].localeCompare(player2[0]);
 			} );
@@ -317,7 +317,7 @@ function SaveHistoryToTheSpreadsheet(teamW, teamL, sr_adjustW, sr_adjustL) {
 				valueInputOption: 'RAW',
 				data: body
 			}).then((response) => {
-				
+
 			},(response) => {
 
 				alert('ErrorWrite History: ' + response.result.error.message);

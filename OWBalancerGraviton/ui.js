@@ -937,7 +937,19 @@ function sort_team( team, sort_field = 'sr' ) {
 }
 
 function adjust_team_ranks( team, win ) {
-	adjust_players_ranks( team, win );
+	document.body.style.cursor='wait';
+	document.getElementById("blue_won_button").style.cursor='wait';
+	document.getElementById("red_won_button").style.cursor='wait';
+	
+	SyncPlayersWithTheSpreadsheet(false); // upload data
+	setTimeout( function() { // wait a bit till data is uploaded
+		adjust_players_ranks( team, win );
+		redraw_teams();
+
+		document.body.style.cursor='default';
+		document.getElementById("blue_won_button").style.cursor='default';
+		document.getElementById("red_won_button").style.cursor='default';
+	}, 500);
 }
 
 function mark_players(team1, team2) {
@@ -1134,17 +1146,29 @@ function player_allowDrop(ev) {
 
 function player_contextmenu(ev) {
 	ev.preventDefault();
-	
 	var player_id = ev.currentTarget.id;
-	player_being_edited = find_player_by_id(player_id);
-	if( player_being_edited == undefined ) {
-		alert("player not found!");
-		return;
-	}
+
+	// upload data
+	document.body.style.cursor='wait';
+	document.getElementById(player_id).style.cursor='wait';
 	
-	fill_player_stats_dlg();
-	
-	open_dialog("popup_dlg_edit_player");
+	SyncPlayersWithTheSpreadsheet(false);
+	setTimeout( function() { // wait a bit till data is uploaded
+
+		// data upload has ended
+		document.body.style.cursor='default';
+		document.getElementById(player_id).style.cursor='default';
+
+		// open editor
+		player_being_edited = find_player_by_id(player_id);
+		if( player_being_edited == undefined ) {
+			alert("player not found!");
+			return;
+		}
+		fill_player_stats_dlg();
+		open_dialog("popup_dlg_edit_player");
+
+	}, 500);
 }
 
 function player_dblClick(ev) {

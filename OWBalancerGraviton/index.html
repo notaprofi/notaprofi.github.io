@@ -114,7 +114,7 @@
 			</button>
 			<input title="Sort team by name" type="button" class="team_btn" onclick="sort_team(team1, 'display_name');redraw_teams();" value="&uarr;&darr;Az"/>
 			<input title="Sort team by SR" type="button" class="team_btn" onclick="sort_team(team1, 'sr');redraw_teams();" value="&uarr;&darr;123"/>
-			<input title="Adjust SR" type="button" class="team_btn" onclick="adjust_team_ranks(team1_slots, team2_slots);redraw_teams();" value="Blue won"/>
+			<input id="blue_won_button" title="Adjust SR" type="button" class="team_btn" onclick="adjust_team_ranks(team1_slots, team2_slots);" value="Blue won"/>
 		    </div>
 			
 			<div>
@@ -174,7 +174,7 @@
 			</button>
 			<input title="Sort team by name" type="button" class="team_btn" onclick="sort_team(team2, 'display_name');redraw_teams();" value="&uarr;&darr;Az"/>
 			<input title="Sort team by SR" type="button" class="team_btn" onclick="sort_team(team2, 'sr');redraw_teams();" value="&uarr;&darr;123"/>
-			<input title="Adjust SR" type="button" class="team_btn" width="100%" onclick="adjust_team_ranks(team2_slots, team1_slots);redraw_teams();" value="Red won"/>
+			<input id="red_won_button" title="Adjust SR" type="button" class="team_btn" width="100%" onclick="adjust_team_ranks(team2_slots, team1_slots);" value="Red won"/>
 			</div>			
 
 			<div>
