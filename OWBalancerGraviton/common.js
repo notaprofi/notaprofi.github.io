@@ -542,31 +542,27 @@ function adjust_players_ranks( teamW, teamL ) {
 
 		var e = 2/(1+Math.pow(10,sr_diff/830));
 
+		var sr_adjustW = {};
+		var sr_adjustL = {};
+		var sr_adjust = sr_adjustW;
 		var time = new Date;
 		for(team of [teamW, teamL]) {
-			for( player of team["tank"] ) {
-				player.last_updated = time;
-				player.playtime_by_class["tank"] += 0.25;
-				player.downloaded = false;
-				let k = -35+150*Math.pow(player.playtime_by_class["tank"]*4,-1/4)
-				player.sr_by_class["tank"] += Math.round(k*e);
-			}
-			for( player of team["dps"] ) {
-				player.last_updated = time;
-				player.playtime_by_class["dps"] += 0.25;
-				player.downloaded = false;
-				let k = -35+150*Math.pow(player.playtime_by_class["dps"]*4,-1/4)
-				player.sr_by_class["dps"] += Math.round(k*e);
-			}
-			for( player of team["support"] ) {
-				player.last_updated = time;
-				player.playtime_by_class["support"] += 0.25;
-				player.downloaded = false;
-				let k = -35+150*Math.pow(player.playtime_by_class["support"]*4,-1/4)
-				player.sr_by_class["support"] += Math.round(k*e);
+			for( class_name of ["tank", "dps", "support"] ) {
+				sr_adjust[class_name] = [];
+				for( player of team[class_name] ) {
+					player.last_updated = time;
+					player.playtime_by_class[class_name] += 0.25;
+					player.downloaded = false;
+					let k = Math.max(-35+150*Math.pow(player.playtime_by_class[class_name]*4,-1/4),25);
+					let adjust = Math.round(k*e);
+					player.sr_by_class[class_name] += adjust;
+					sr_adjust[class_name].push(adjust);
+				}
 			}
 			e = -e;
+			sr_adjust = sr_adjustL;
 		}
+		SaveHistoryToTheSpreadsheet(teamW, teamL, sr_adjustW, sr_adjustL);
 	}
 }
 

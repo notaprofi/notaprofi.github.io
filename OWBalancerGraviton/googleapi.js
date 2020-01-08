@@ -45,9 +45,8 @@ function ConditionalSignIn() {
 		});
 	return true;
 }
-	
-function SyncPlayersWithTheSpreadsheet() {
-	// making sure we are connected to the spreadsheet
+
+function GetSpreadsheet() { // making sure we are connected to the spreadsheet
 	if( !ConditionalSignIn() ) {
 		return false;
 	}
@@ -60,11 +59,19 @@ function SyncPlayersWithTheSpreadsheet() {
 		alert('Error: Incorrect spreadsheetId link. Put a correct link into the settings or clear the field.');
 		return false;
 	}
+	return spreadsheetIdHelper[1];
+}
+	
+function SyncPlayersWithTheSpreadsheet() {
+	var spreadsheet = GetSpreadsheet();
+	if( spreadsheet === false ) {
+		return false;
+	}
 
 	// making sure we've downloaded all the changes made by other people
 	var table_range = 'Players!A2:L'+(lobby.length+12+20+1).toString(); // read 20 extra lines, just in case there are new players
 	gapi.client.sheets.spreadsheets.values.get({
-		spreadsheetId: spreadsheetIdHelper[1],
+		spreadsheetId: spreadsheet,
 		range: table_range,
 	  }).then( function(response) {
 
@@ -126,7 +133,7 @@ function SyncPlayersWithTheSpreadsheet() {
 			}
 		  }
 		} else {
-		  alert('No data found in the spreadsheet.');
+		  alert('No data was found in the spreadsheet.');
 		}
 
 		// putting our changes in
@@ -141,7 +148,7 @@ function SyncPlayersWithTheSpreadsheet() {
 		  
 			gapi.client.sheets.spreadsheets.values.update(
 				{
-					spreadsheetId: spreadsheetIdHelper[1],
+					spreadsheetId: spreadsheet,
 					range: 'Players!A2',
 					valueInputOption: 'RAW',
 					resource: body
@@ -151,13 +158,15 @@ function SyncPlayersWithTheSpreadsheet() {
 	
 					alert('ErrorWrite: ' + response.result.error.message);
 	
-				}); 
+				}
+			); 
 		}
 	  }, function(response) {
 
 		alert('ErrorRead: ' + response.result.error.message);
 
-	  });
+	  }
+	);
 }
 
 function PlayerToSpreadsheet(player) {
@@ -245,4 +254,81 @@ function UpdatePlayer(player) {
 
 		// look in classic teams
     // TODO
+}
+
+// !!!!we are assuming 2-2-2 composition
+function SaveHistoryToTheSpreadsheet(teamW, teamL, sr_adjustW, sr_adjustL) {
+	var spreadsheet = GetSpreadsheet();
+	if( spreadsheet === false ) {
+		return false;
+	}
+
+	// form the array to upload
+	var value = [];
+
+	value.push(teamW["tank"][0].last_updated);
+	// look in role lock teams
+	var sr_adjust = sr_adjustW;
+	for ( let team of [teamW, teamL] ) {
+		for ( let class_name of ["tank", "dps", "support"] ) {
+			for( var i=0; i<team[class_name].length; i++) {
+				let player = team[class_name][i];
+				value.push(player.id);
+				value.push(player.sr_by_class[class_name]-sr_adjust[class_name][i]);
+				value.push(sr_adjust[class_name][i]);
+			}
+		}
+		sr_adjust = sr_adjustL;
+	}
+
+	var values = [];
+	values.push(value);
+
+	gapi.client.sheets.spreadsheets.values.get({
+		spreadsheetId: spreadsheet,
+		range: 'History!AL2',
+	  }).then( function(response) {
+
+		// read number of entries
+		var NGames;
+		var range = response.result;
+		if (typeof(range.values) !== 'undefined' && range.values.length > 0) {
+			NGames = parseInt(range.values[0]);
+		} else {
+			alert('No data was found in the History spreadsheet.');
+			return false;
+		}
+
+		// write to the history table
+		var table_range = 'History!A'+(NGames+4).toString();
+		var body = [
+			{
+				range: 'History!AL2',
+				values: [ [(NGames+1).toString()] ]
+			},
+			{
+				range: table_range,
+				values: values
+			}
+		];
+		gapi.client.sheets.spreadsheets.values.batchUpdate(
+			{
+				spreadsheetId: spreadsheet,
+				valueInputOption: 'RAW',
+				data: body
+			}).then((response) => {
+				
+			},(response) => {
+
+				alert('ErrorWrite History: ' + response.result.error.message);
+
+			}
+		); 
+
+		}, function(response) {
+
+			alert('ErrorRead HistoryNGames: ' + response.result.error.message);
+
+		}
+	);
 }
