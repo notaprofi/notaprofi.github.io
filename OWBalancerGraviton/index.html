@@ -258,7 +258,7 @@
 					<li><strong>Sort</strong> lobby for easier player management</li>
 					<li>Click <strong>'Fill teams'</strong> to put 12 random players in teams</li>	
 					<li>Click <strong>'Balance teams'</strong> to automatically swap players between teams for best balance. Click again to get another combination</li>	
-					<li>Click <strong>'Blue/Red won'</strong> after a match to increase/reduce players SR by the ammount set in the <strong>'Settings'</strong></li>
+					<li>Click <strong>'Blue/Red won'</strong> after a match to increase/reduce players SR. ΔSR = <sup>2k</sup>/<sub>1+10<sup>(SR<sub>winner</sub>-SR<sub>looser</sub>)/830</sup></sup></sup></sub>, where k changes from 115 to 25, depending on the games played; SR<sub>winner/loser</sub> - the average SR of the winning or losing team</li>
 					<li>Click <strong>'Mark players'</strong> after a match to mark people who played and make sure noone waits in the queue for too long</li>
 					<li>Click <strong>'ReFill & Balance'</strong> to clear teams; and then fill them randomly, non-marked players go first; It also will balance them. Click again to get another combination</li>				
 					<li><strong>Right click</strong> on a player to edit name, SR and class. Or to <strong>Pin</strong> a player and to make sure he always plays</li>
@@ -559,10 +559,6 @@
 							<input id="update_picked_maxage" name="update_picked_maxage" type="number" size=4 min=0 max=9999 style="width: 4em;" /> days
 							</br>
 
-							<label for="adjust_SR_after_match">Average SR adjust after win/loss: k = </label>
-							<input id="adjust_SR_after_match_value" name="adjust_SR_after_match_value" class="percent" type="number" size=3 min=0 max=999 autocomplete="off" value="50"/>
-						    </br>
-							<label for="update_picked">The exact SR<sub>adjust</sub> = <sup>2k</sup>/<sub>1+10<sup>(SR<sub>winner</sub>-SR<sub>looser</sub>)/830</sup></sup></sup></sub>​ </label>
 							</br>
 							<label for="data_sreadsheet">Spreadsheet URL: </label>
 							<input id="data_sreadsheet" type="text" size=35 autocomplete="off" value=""/>

@@ -230,7 +230,6 @@ function get_default_settings() {
 		update_edited_fields: false,
 		update_picked: true,
 		update_picked_maxage: 15,
-		adjust_SR_after_match_value: 50,
 
 		data_sreadsheet: "",
 	};
@@ -541,30 +540,32 @@ function adjust_players_ranks( teamW, teamL ) {
 		var teamL_sr = calc_team_sr(teamL, teamL);
 		var sr_diff = teamW_sr - teamL_sr;
 
-		var k = Settings["adjust_SR_after_match_value"];
-		var rank_change = Math.round(2*k/(1+Math.pow(10,sr_diff/830)));
+		var e = 2/(1+Math.pow(10,sr_diff/830));
 
 		var time = new Date;
 		for(team of [teamW, teamL]) {
-			for( i in team["tank"] ) {
-				team["tank"][i].sr_by_class["tank"] += rank_change;
-				team["tank"][i].last_updated = time;
-				team["tank"][i].playtime_by_class["tank"] += 0.25;
-				team["tank"][i].downloaded = false;
+			for( player of team["tank"] ) {
+				player.last_updated = time;
+				player.playtime_by_class["tank"] += 0.25;
+				player.downloaded = false;
+				let k = -35+150*Math.pow(player.playtime_by_class["tank"]*4,-1/4)
+				player.sr_by_class["tank"] += Math.round(k*e);
 			}
-			for( i in team["dps"] ) {
-				team["dps"][i].sr_by_class["dps"] += rank_change;
-				team["dps"][i].last_updated = time;
-				team["dps"][i].playtime_by_class["dps"] += 0.25;
-				team["dps"][i].downloaded = false;
+			for( player of team["dps"] ) {
+				player.last_updated = time;
+				player.playtime_by_class["dps"] += 0.25;
+				player.downloaded = false;
+				let k = -35+150*Math.pow(player.playtime_by_class["dps"]*4,-1/4)
+				player.sr_by_class["dps"] += Math.round(k*e);
 			}
-			for( i in team["support"] ) {
-				team["support"][i].sr_by_class["support"] += rank_change;
-				team["support"][i].last_updated = time;
-				team["support"][i].playtime_by_class["support"] += 0.25;
-				team["support"][i].downloaded = false;
+			for( player of team["support"] ) {
+				player.last_updated = time;
+				player.playtime_by_class["support"] += 0.25;
+				player.downloaded = false;
+				let k = -35+150*Math.pow(player.playtime_by_class["support"]*4,-1/4)
+				player.sr_by_class["support"] += Math.round(k*e);
 			}
-			rank_change = -rank_change;
+			e = -e;
 		}
 	}
 }
