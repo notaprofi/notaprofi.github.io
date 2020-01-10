@@ -536,6 +536,21 @@ function sort_players( team, sort_field = 'sr', order_asc=false ) {
 
 function adjust_players_ranks( teamW, teamL ) {
 	if ( is_role_lock_enabled() ) {
+		// check if there are all 12 players
+		var i = 0;
+		for(team of [teamW, teamL]) {
+			for( class_name of ["tank", "dps", "support"] ) {
+				for( player of team[class_name] ) {
+					if( player.sr_by_class[class_name] > 0 ) {
+						i++;
+					}
+				}
+			}
+		}
+		if (i<12) {
+			alert('Error: Players are not placed to the teams correctly. SR calculation is impossible.');
+			return false;
+		}
 
 		var teamW_sr = calc_team_sr(teamW, teamW);
 		var teamL_sr = calc_team_sr(teamL, teamL);
