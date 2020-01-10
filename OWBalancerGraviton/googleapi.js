@@ -69,7 +69,7 @@ function SyncPlayersWithTheSpreadsheet(download_data=true) {
 	}
 
 	// making sure we've downloaded all the changes made by other people
-	var table_range = 'Players!A2:L'+(lobby.length+12+20+1).toString(); // read 20 extra lines, just in case there are new players
+	var table_range = 'Players!A2:M'+(lobby.length+12+20+1).toString(); // read 20 extra lines, just in case there are new players
 	gapi.client.sheets.spreadsheets.values.get({
 		spreadsheetId: spreadsheet,
 		range: table_range,
@@ -77,7 +77,7 @@ function SyncPlayersWithTheSpreadsheet(download_data=true) {
 
 		// converting data to the spreadsheetformat
 		var players_here = [];
-		var length = 12; // from A column to L column
+		var length = 13; // from A column to M column
 		for (player of lobby) {
 			var p_here = PlayerToSpreadsheet(player);
 			players_here.push(p_here);
@@ -196,6 +196,7 @@ function PlayerToSpreadsheet(player) {
 		p_here.push(player.classes[1]);
 		p_here.push(player.classes[2]);
 	}
+	p_here.push(player.ghost);
 	p_here.push(player.last_updated);
 
 	return p_here;
@@ -223,7 +224,8 @@ function SpreadsheetToPlayer(p) {
 	if ( p[10] != "" ) {
 		player.classes.push(p[10]);
 	} 
-	player.last_updated = new Date(p[11]);
+	player.ghost = (p[11] == "TRUE");
+	player.last_updated = new Date(p[12]);
 
 	return player;
 }

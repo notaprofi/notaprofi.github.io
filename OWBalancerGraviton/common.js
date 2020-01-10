@@ -67,6 +67,7 @@ function create_empty_player() {
 			last_updated: new Date(0),
 			private_profile: false,
 			mark: false,
+			ghost: false,
 			downloaded: false,
 		};
 	

@@ -347,6 +347,19 @@ function edit_player_ok() {
 	} else {
 		player_struct.mark = false;
 	}
+
+	// importance
+	if ( document.getElementById("dlg_player_ghost").checked ) {
+		if(player_struct.ghost == false) {
+			player_struct.ghost = true;
+			is_param_changes_made = true;
+		}
+	} else {
+		if(player_struct.ghost == true) {
+			player_struct.ghost = false;
+			is_param_changes_made = true;
+		}
+	}
 	
 	// check-in
 	if ( document.getElementById("dlg_player_checkin").checked ) {
@@ -507,7 +520,7 @@ function export_teams_dlg_open() {
 	export_teams_dlg_change_format();
 }
 
-function fill_teams(unmarked_only = false) {
+function fill_teams(unmarked_only = true,nonghost_only = true) {
 	if ( is_role_lock_enabled() ) {
 		for ( var team_slots of [team1_slots, team2_slots] ) {
 			for ( var class_name in team_slots ) {
@@ -521,6 +534,9 @@ function fill_teams(unmarked_only = false) {
 							continue;
 						}
 						if (unmarked_only && player.mark) {
+							continue;
+						}
+						if (!unmarked_only && nonghost_only && player.ghost) {
 							continue;
 						}
 					}
@@ -551,6 +567,9 @@ function fill_teams(unmarked_only = false) {
 						if (unmarked_only && player.mark) {
 							continue;
 						}
+						if (!unmarked_only && nonghost_only && player.ghost) {
+							continue;
+						}
 					}
 					if ( player.classes.indexOf(class_name) == -1 ) {
 						continue;
@@ -576,6 +595,9 @@ function fill_teams(unmarked_only = false) {
 							continue;
 						}
 						if (unmarked_only && player.mark) {
+							continue;
+						}
+						if (!unmarked_only && nonghost_only && player.ghost) {
 							continue;
 						}
 					}
@@ -618,13 +640,14 @@ function fill_teams(unmarked_only = false) {
 	
 	redraw_lobby();
 	redraw_teams();
-	if(unmarked_only) fill_teams(false);
+	if(unmarked_only) fill_teams(false,true); // once we did unmarked we do marked, but nonghost
+	if(!unmarked_only && nonghost_only) fill_teams(false,false); // do marked and ghost
 }
 
 function refill_teams() {
 	move_team_to_lobby(team1, team1_slots);
 	move_team_to_lobby(team2, team2_slots);
-	fill_teams(true);
+	fill_teams();
 	balance_teams();
 }
 
@@ -1883,6 +1906,8 @@ function fill_player_stats_dlg( clear_errors=true ) {
 	document.getElementById("dlg_player_pinned").checked = pinned_players.has( player_struct.id );
 		
 	document.getElementById("dlg_player_marked").checked = player_struct.mark;
+	
+	document.getElementById("dlg_player_ghost").checked = player_struct.ghost;
 
 	document.getElementById("dlg_player_checkin").checked = checkin_list.has( player_struct.id );
 	
