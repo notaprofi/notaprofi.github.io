@@ -522,97 +522,47 @@ function export_teams_dlg_open() {
 
 function fill_teams(unmarked_only = true,nonghost_only = true) {
 	if ( is_role_lock_enabled() ) {
-		for ( var team_slots of [team1_slots, team2_slots] ) {
-			for ( var class_name in team_slots ) {
+		for ( var class_name of ["tank", "support", "dps"] ) { // processing in the order from the most unpopular class to the most popular
+			for ( var team_slots of [team1_slots, team2_slots] ) {
 				var free_slots = Settings.slots_count[class_name] - team_slots[class_name].length;
 				var available_players = [];
 				
-				// first pass - pick players by main role for slot
-				for ( var player of lobby ) {
-					if ( checkin_list.size > 0 ) {
-						if ( ! checkin_list.has(player.id) ) {
-							continue;
+				// pick players by main role first, then by the second and the third role, then pick regardless of the role
+				for ( let iRolePriority = 0; iRolePriority < 4; iRolePriority++) {
+					for ( let player of lobby ) {
+						if ( checkin_list.size > 0 ) {
+							if ( !checkin_list.has(player.id) ) {
+								continue;
+							}
+							if ( unmarked_only && player.mark ) {
+								continue;
+							}
+							if ( !unmarked_only && nonghost_only && player.ghost ) {
+								continue;
+							}
 						}
-						if (unmarked_only && player.mark) {
-							continue;
+						if ( iRolePriority != 3 ) { // iRolePriority == 3 -> pick anyone
+							if ( player.classes.length <= iRolePriority || player.classes[iRolePriority] !== class_name ) {
+								continue;
+							}
 						}
-						if (!unmarked_only && nonghost_only && player.ghost) {
-							continue;
-						}
+						available_players.push( player );
 					}
-					if ( player.classes[0] !== class_name ) {
-						continue;
+					
+					while ( (free_slots > 0) && (available_players.length > 0) ) {
+						var random_index = Math.floor(Math.random() * available_players.length);
+						var random_player = available_players[ random_index ];
+						lobby.splice( lobby.indexOf(random_player), 1 );
+						available_players.splice( available_players.indexOf(random_player), 1 );
+						team_slots[class_name].push( random_player );
+						free_slots--;
 					}
-					available_players.push( player );
-				}
-				
-				while ( (free_slots > 0) && (available_players.length > 0) ) {
-					var random_index = Math.floor(Math.random() * available_players.length);
-					var random_player = available_players[ random_index ];
-					lobby.splice( lobby.indexOf(random_player), 1 );
-					available_players.splice( available_players.indexOf(random_player), 1 );
-					team_slots[class_name].push( random_player );
-					free_slots--;
-				}
-				if ( free_slots <= 0 ) {
-					continue;
-				}
-				
-				// second pass - pick players able to play specified role
-				for ( var player of lobby ) {
-					if ( checkin_list.size > 0 ) {
-						if ( ! checkin_list.has(player.id) ) {
-							continue;
-						}
-						if (unmarked_only && player.mark) {
-							continue;
-						}
-						if (!unmarked_only && nonghost_only && player.ghost) {
-							continue;
-						}
+					if ( free_slots <= 0 ) {
+						break;
 					}
-					if ( player.classes.indexOf(class_name) == -1 ) {
-						continue;
-					}
-					available_players.push( player );
-				}
-				while ( (free_slots > 0) && (available_players.length > 0) ) {
-					var random_index = Math.floor(Math.random() * available_players.length);
-					var random_player = available_players[ random_index ];
-					lobby.splice( lobby.indexOf(random_player), 1 );
-					available_players.splice( available_players.indexOf(random_player), 1 );
-					team_slots[class_name].push( random_player );
-					free_slots--;
-				}
-				if ( free_slots <= 0 ) {
-					continue;
-				}
-				
-				// third pass - pick any available players
-				for ( var player of lobby ) {
-					if ( checkin_list.size > 0 ) {
-						if ( ! checkin_list.has(player.id) ) {
-							continue;
-						}
-						if (unmarked_only && player.mark) {
-							continue;
-						}
-						if (!unmarked_only && nonghost_only && player.ghost) {
-							continue;
-						}
-					}
-					available_players.push( player );
-				}
-				while ( (free_slots > 0) && (available_players.length > 0) ) {
-					var random_index = Math.floor(Math.random() * available_players.length);
-					var random_player = available_players[ random_index ];
-					lobby.splice( lobby.indexOf(random_player), 1 );
-					available_players.splice( available_players.indexOf(random_player), 1 );
-					team_slots[class_name].push( random_player );
-					free_slots--;
-				}
-			}
-		}
+				} // for role priority
+			} // for teams
+		} // for class
 	} else {
 		for ( var team of [team1, team2] ) {
 			var free_slots = get_team_size() - team.length;
@@ -638,10 +588,14 @@ function fill_teams(unmarked_only = true,nonghost_only = true) {
 		}
 	}
 	
-	redraw_lobby();
-	redraw_teams();
-	if(unmarked_only) fill_teams(false,true); // once we did unmarked we do marked, but nonghost
-	if(!unmarked_only && nonghost_only) fill_teams(false,false); // do marked and ghost
+	if(unmarked_only) {  // once we did unmarked we do marked, but nonghost
+		fill_teams(false,true);
+	} else if(!unmarked_only && nonghost_only) { // do marked and ghost
+		fill_teams(false,false);
+	} else {
+		redraw_lobby();
+		redraw_teams();
+	}
 }
 
 function refill_teams() {
