@@ -236,6 +236,9 @@ function UpdatePlayer(player) {
 		return p.id == player.id; // compare id's
 	});
 	if (li >= 0) {
+		player.mark = lobby[li].mark;
+		player.games_played = lobby[li].games_played;
+		player.games_checkedin = lobby[li].games_checkedin;
 		lobby[li] = player;
 		redraw_player(lobby[li]);
 		return true;
@@ -246,6 +249,9 @@ function UpdatePlayer(player) {
 		for ( let class_name in team_slots ) {
 			for( var i=0; i<team_slots[class_name].length; i++) {
 				if ( team_slots[class_name][i].id == player.id) {
+					player.mark = team_slots[class_name][i].mark;
+					player.games_played = team_slots[class_name][i].games_played;
+					player.games_checkedin = team_slots[class_name][i].games_checkedin;
 					team_slots[class_name][i] = player;
 					redraw_player(team_slots[class_name][i]);
 					return true;

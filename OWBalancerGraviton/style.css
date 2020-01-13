@@ -301,6 +301,15 @@ li {
 	filter: opacity(40%);
 }
 
+.games-display {
+	margin-left: "5px";
+	margin-right: "2px";
+	margin-top: "5px";
+	height: 0.5em;
+	float: right;
+	filter: opacity(50%);
+}
+
 .dlg {
 	position: fixed;
 	left: 0px;

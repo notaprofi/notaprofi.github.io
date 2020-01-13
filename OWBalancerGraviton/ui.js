@@ -193,7 +193,7 @@ function clear_lobby() {
 			var player_to_delete = lobby.pop();
 			
 			// remove from checkin
-			checkin_list.delete(player_to_delete.id);
+			checkout_a_player(player_to_delete.id);
 			
 			// remove from pinned
 			pinned_players.delete(player_to_delete.id);
@@ -365,7 +365,7 @@ function edit_player_ok() {
 	if ( document.getElementById("dlg_player_checkin").checked ) {
 		checkin_list.add( player_struct.id );		
 	} else {
-		checkin_list.delete( player_struct.id );
+		checkout_a_player( player_struct.id );
 	}
 	save_checkin_list();
 
@@ -520,7 +520,8 @@ function export_teams_dlg_open() {
 	export_teams_dlg_change_format();
 }
 
-function fill_teams(unmarked_only = true,nonghost_only = true) {
+function fill_teams() {
+	for( let iter = 0; iter < 5; iter++) { // player queue iterations: 0. didn't play last match, 1. played last match, but not ghosts, and played small % of matches, 2. the same but bigger % of matches, 3. the same, but close to 100% of matches, 4. ghosts
 	if ( is_role_lock_enabled() ) {
 		for ( var class_name of ["tank", "support", "dps"] ) { // processing in the order from the most unpopular class to the most popular
 			for ( var team_slots of [team1_slots, team2_slots] ) {
@@ -534,10 +535,8 @@ function fill_teams(unmarked_only = true,nonghost_only = true) {
 							if ( !checkin_list.has(player.id) ) {
 								continue;
 							}
-							if ( unmarked_only && player.mark ) {
-								continue;
-							}
-							if ( !unmarked_only && nonghost_only && player.ghost ) {
+							if ( iter < player_mark_category(player) || 
+								player.ghost && 0 < iter && iter < 4 ) {
 								continue;
 							}
 						}
@@ -587,15 +586,10 @@ function fill_teams(unmarked_only = true,nonghost_only = true) {
 			}
 		}
 	}
+	} // iter
 	
-	if(unmarked_only) {  // once we did unmarked we do marked, but nonghost
-		fill_teams(false,true);
-	} else if(!unmarked_only && nonghost_only) { // do marked and ghost
-		fill_teams(false,false);
-	} else {
-		redraw_lobby();
-		redraw_teams();
-	}
+	redraw_lobby();
+	redraw_teams();
 }
 
 function refill_teams() {
@@ -922,16 +916,12 @@ function adjust_team_ranks( team, win, is_a_draw = false ) {
 	setTimeout( function() { // wait a bit till data is uploaded
 		adjust_players_ranks( team, win, is_a_draw );
 		redraw_teams();
+		redraw_lobby(); // redraw marks in the lobby
 
 		document.body.style.cursor='default';
 		document.getElementById("blue_won_button").style.cursor='default';
 		document.getElementById("red_won_button").style.cursor='default';
 	}, 500);
-}
-
-function mark_players(team1, team2) {
-	mark_players_in_team(team1);
-	mark_players_in_team(team2);
 }
 
 function stop_stats_update() {
@@ -1066,7 +1056,7 @@ function manual_checkin_toggle_player( tr, cbox ) {
 		}
 		// todo: clasic
 	} else {
-		checkin_list.delete(player_id);
+		checkout_a_player(player_id);
 		save_checkin_list();
 		tr.classList.toggle("checked", false);
 	}
@@ -1312,7 +1302,7 @@ function player_drop(ev) {
 			pinned_players.delete(dragged_id);
 			save_pinned_list();
 			// remove from checkin
-			checkin_list.delete(dragged_id);
+			checkout_a_player(dragged_id);
 			save_checkin_list();
 		}
 	
@@ -1389,7 +1379,7 @@ function player_drop(ev) {
 		pinned_players.delete(dragged_id);
 		save_pinned_list();
 		// remove from checkin
-		checkin_list.delete(dragged_id);
+		checkout_a_player(dragged_id);
 		save_checkin_list();
 	}
 	
@@ -1656,13 +1646,32 @@ function draw_player_cell( player_struct, small=false, is_captain=false, slot_cl
 	var br_node;
 	
 	var new_player_item = document.createElement("div");
-	if(player_struct.downloaded && player_struct.mark) {
-		new_player_item.style.background = "linear-gradient(to right, #ff55ff 0%, #55ff55 100%)";
-	} else if(player_struct.downloaded) {
-		new_player_item.style.backgroundColor = "#ffccff"; // purple
-	} else if(player_struct.mark) {
-		new_player_item.style.backgroundColor = "#88cc88"; // green
-    }
+	if(player_struct.downloaded) {
+		switch(player_mark_category(player_struct)) {
+			case 0: new_player_item.style.backgroundColor = "#ffccff"; break; // purple
+			case 2: if(!small) { 
+				new_player_item.style.background = "linear-gradient(to right, #ff55ff 0%, #99ff22 100%)"; 
+				break;
+			}
+			case 3: if(!small) { 
+				new_player_item.style.background = "linear-gradient(to right, #ff55ff 0%, #ff9922 100%)"; 
+				break;
+			}
+			case 1: new_player_item.style.background = "linear-gradient(to right, #ff55ff 0%, #55ff55 100%)"; break;
+		}
+	} else {
+		switch(player_mark_category(player_struct)) {
+			case 2: if(!small) { 
+				new_player_item.style.backgroundColor = "#AACC88";  // yellowgreen
+				break;
+			}
+			case 3: if(!small) { 
+				new_player_item.style.backgroundColor = "#EECC88";  // yellow
+				break;
+			}
+			case 1: new_player_item.style.backgroundColor = "#88cc88"; break; // green
+		}
+	}
 
 	new_player_item.className = "cell player-item";
 	if( player_struct.empty ) {
@@ -1676,6 +1685,7 @@ function draw_player_cell( player_struct, small=false, is_captain=false, slot_cl
 			new_player_item.title += "\n"+class_name+": "+is_undefined(player_struct.sr_by_class[class_name],0)+" sr";
 		}
 		new_player_item.title += "\nLast updated: " + print_date(player_struct.last_updated);
+		new_player_item.title += "\nGames played: " + player_struct.games_played + "/" + player_struct.games_checkedin;
 		if ( is_captain ) {
 			new_player_item.title += "\nTeam captain";
 		}
@@ -1788,7 +1798,18 @@ function draw_player_cell( player_struct, small=false, is_captain=false, slot_cl
 		mark_display.appendChild(text_node);
 		player_name.appendChild(mark_display);
 	}
-	
+
+	// games played/checkedin_for
+	if ( !(player_struct.empty != undefined) && !small ) {
+		var games_display = document.createElement("div");
+		sr_display.id = "games_display_"+player_struct.id;
+		var games_text = player_struct.games_played+"/"+player_struct.games_checkedin;
+		text_node = document.createTextNode( games_text );
+		games_display.appendChild(text_node);
+		games_display.classList.add("games-display");
+		new_player_item.appendChild(games_display);
+	}
+
 	// active classes icons
 	if ( player_struct.classes !== undefined ) {
 		for(var i=0; i<player_struct.classes.length; i++) {

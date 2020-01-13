@@ -69,6 +69,8 @@ function create_empty_player() {
 			mark: false,
 			ghost: false,
 			downloaded: false,
+			games_played: 0,
+			games_checkedin: 0,
 		};
 	
 	for( let class_name of class_names ) {
@@ -77,6 +79,20 @@ function create_empty_player() {
 	}
 	
 	return new_player;
+}
+
+function player_mark_category( player ) {
+	if(!player.mark) {
+		return 0;
+	} else if(player.games_checkedin == 0) {
+		return 1; // this shouldn't heppen, but just in case
+	} else if (player.games_played/player.games_checkedin < 0.7) {
+		return 1;
+	} else if (player.games_played/player.games_checkedin < 0.9) {
+		return 2;
+	} else {
+		return 3;
+	}
 }
 
 function create_random_player( id ) {
@@ -585,19 +601,22 @@ function adjust_players_ranks( teamW, teamL, is_a_draw = false ) {
 	}
 }
 
-function mark_players_in_team( team ) {
+function mark_players() {
 	for( i in lobby ) {
 		lobby[i].mark = false;
+		if(checkin_list.has(lobby[i].id)) {
+			lobby[i].games_checkedin++;
+		}
 	}
 	if ( is_role_lock_enabled() ) 	{
-		for( i in team["tank"] ) {
-			team["tank"][i].mark = true;
-		}
-		for( i in team["dps"] ) {
-			team["dps"][i].mark = true;
-		}
-		for( i in team["support"] ) {
-			team["support"][i].mark = true;
+		for( let team of [team1_slots, team2_slots]) {
+			for (class_name in team) {
+				for( i in team[class_name] ) {
+					team[class_name][i].mark = true;
+					team[class_name][i].games_checkedin++;
+					team[class_name][i].games_played++;
+				}
+			}
 		}
 	}
 }
@@ -605,21 +624,31 @@ function mark_players_in_team( team ) {
 function reset_players_marks() {
 	for( i in lobby ) {
 		lobby[i].mark = false;
+		lobby[i].games_checkedin = 0;
+		lobby[i].games_played = 0;
 	}
-	for( let team of  [team1_slots, team2_slots])
 	if ( is_role_lock_enabled() ) 	{
-		for( i in team["tank"] ) {
-			team["tank"][i].mark = false;
-		}
-		for( i in team["dps"] ) {
-			team["dps"][i].mark = false;
-		}
-		for( i in team["support"] ) {
-			team["support"][i].mark = false;
+		for( let team of  [team1_slots, team2_slots]) {
+			for (class_name in team) {
+				for( i in team[class_name] ) {
+					team[class_name][i].mark = false;
+					team[class_name][i].games_checkedin = 0;
+					team[class_name][i].games_played = 0;
+				}
+			}
 		}
 	}
 	redraw_teams();
 	redraw_lobby();
+}
+
+function checkout_a_player( player_id ) {
+	checkin_list.delete(player_id);
+	/* var player = find_player_by_id(player_id);
+	if( player != undefined) {
+		player.games_played = 0;
+		player.games_checkedin = 0;
+	} */
 }
 
 function str_padding( source_str, length, padding_char=" " ) {
