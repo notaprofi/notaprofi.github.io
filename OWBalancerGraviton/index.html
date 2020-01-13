@@ -106,16 +106,10 @@
 		
 		
 		<div class="cell team-cell">
-			<div class="team-toolbar">
-			<input title="Clear team and move all players to lobby" type="button" class="team_btn" onclick="move_team_to_lobby(team1, team1_slots);redraw_teams();" value=" X "/>
-			<button title="Sort team by class" class="team_btn" onclick="sort_team(team1, 'class');redraw_teams();">
-				&uarr;&darr;
-				<img src="class_icons/dps.png" style="height: 0.9em;">
-			</button>
-			<input title="Sort team by name" type="button" class="team_btn" onclick="sort_team(team1, 'display_name');redraw_teams();" value="&uarr;&darr;Az"/>
-			<input title="Sort team by SR" type="button" class="team_btn" onclick="sort_team(team1, 'sr');redraw_teams();" value="&uarr;&darr;123"/>
-			<input id="blue_won_button" title="Adjust SR" type="button" class="team_btn" onclick="adjust_team_ranks(team1_slots, team2_slots);" value="Blue won"/>
-		    </div>
+			<div style="float: right;">
+				<input id="blue_won_button" title="Adjust SR and Mark" type="button" class="team_btn" onclick="adjust_team_ranks(team1_slots, team2_slots);" value="Blue Won"/>
+				<input title="Clear team and move all players to lobby" type="button" class="team_btn" onclick="move_team_to_lobby(team1, team1_slots);redraw_teams();" value=" X "/>
+			</div>
 			
 			<div>
 			<input id="team1_name" type="text" class="team-title" value="Team 1" autocomplete="off" onchange="save_team_name(this);">
@@ -144,6 +138,8 @@
 					<input class="medium-btn" type="button" onclick="manual_checkin_open();" value="Manual check-in"/>
 					
 					<input class="medium-btn" type="button" onclick="reset_checkin();" value="Reset" title="Clear check-in mark for all players"/>
+
+					<input title="Unmark all players, just like if they haven't played today." type="button" class="medium-btn" onclick="reset_players_marks();" value="Unmark All Players"/>
 				</div>
 				
 				<div style="display: flex; visibility: hidden">
@@ -157,8 +153,10 @@
 			</div>
 		</div>
 
-		<div class="cell" style="vertical-align: top; padding-top: 0em; min-width: 5em; text-align: center;">
-			<input title="Mark the players in teams and unmark the others." type="button" class="team_btn" onclick="mark_players(team1_slots, team2_slots);redraw_lobby();redraw_teams();" value="Mark Players"/>
+		<div class="cell" style="vertical-align: top;  margin: auto; padding-top: 0em; min-width: 5em; text-align: center;">
+			<div style="margin: auto;  width: 60%;">
+				<input id="draw_button" title="Mark who played" type="button" class="team_btn" onclick="adjust_team_ranks(team1_slots, team2_slots, true);" value="Draw"/>
+			</div>
 		
 	</br></br></br></br></br></br></br></br></br></br>
 		<span style="font-size: 30pt;"><b><i>VS</i></b></span>
@@ -166,15 +164,9 @@
 		
 		
 		<div class="cell team-cell">
-			<div class="team-toolbar">
-			<input title="Clear team and move all players to lobby" type="button" class="team_btn" onclick="move_team_to_lobby(team2, team2_slots);redraw_teams();" value=" X "/>
-			<button title="Sort team by class" class="team_btn" onclick="sort_team(team2, 'class');redraw_teams();">
-				&uarr;&darr;
-				<img src="class_icons/dps.png" style="height: 0.9em;">
-			</button>
-			<input title="Sort team by name" type="button" class="team_btn" onclick="sort_team(team2, 'display_name');redraw_teams();" value="&uarr;&darr;Az"/>
-			<input title="Sort team by SR" type="button" class="team_btn" onclick="sort_team(team2, 'sr');redraw_teams();" value="&uarr;&darr;123"/>
-			<input id="red_won_button" title="Adjust SR" type="button" class="team_btn" width="100%" onclick="adjust_team_ranks(team2_slots, team1_slots);" value="Red won"/>
+			<div style="float: left;">
+				<input title="Clear team and move all players to lobby" type="button" class="team_btn" onclick="move_team_to_lobby(team2, team2_slots);redraw_teams();" value=" X "/>
+				<input id="red_won_button" title="Adjust SR and Mark" type="button" class="team_btn" width="100%" onclick="adjust_team_ranks(team2_slots, team1_slots);" value="Red Won"/>
 			</div>			
 
 			<div>
@@ -201,7 +193,7 @@
 				<br/>
 				<br/>
 		
-				<input value="Fill teams" class="big-btn" type="button" onclick="fill_teams();" title="Pick random checked-in players from lobby to fill all empty slots in teams."/>
+				<input value="Fill teams" class="big-btn" type="button" onclick="fill_teams();" title="Pick random checked-in players from lobby to fill all empty slots in teams. Non-marked players go first."/>
 				<br/>
 				<br/>
 				

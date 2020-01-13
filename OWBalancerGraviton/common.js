@@ -534,7 +534,7 @@ function sort_players( team, sort_field = 'sr', order_asc=false ) {
 	}
 }
 
-function adjust_players_ranks( teamW, teamL ) {
+function adjust_players_ranks( teamW, teamL, is_a_draw = false ) {
 	if ( is_role_lock_enabled() ) {
 		// check if there are all 12 players
 		var i = 0;
@@ -557,7 +557,9 @@ function adjust_players_ranks( teamW, teamL ) {
 		var sr_diff = teamW_sr - teamL_sr;
 
 		var e = 2/(1+Math.pow(10,sr_diff/830));
-
+		if(is_a_draw) {
+			e = 0;
+		}
 		var sr_adjustW = {};
 		var sr_adjustL = {};
 		var sr_adjust = sr_adjustW;
@@ -579,6 +581,7 @@ function adjust_players_ranks( teamW, teamL ) {
 			sr_adjust = sr_adjustL;
 		}
 		SaveHistoryToTheSpreadsheet(teamW, teamL, sr_adjustW, sr_adjustL);
+		mark_players(teamW, teamL);
 	}
 }
 
@@ -597,6 +600,26 @@ function mark_players_in_team( team ) {
 			team["support"][i].mark = true;
 		}
 	}
+}
+
+function reset_players_marks() {
+	for( i in lobby ) {
+		lobby[i].mark = false;
+	}
+	for( let team of  [team1_slots, team2_slots])
+	if ( is_role_lock_enabled() ) 	{
+		for( i in team["tank"] ) {
+			team["tank"][i].mark = false;
+		}
+		for( i in team["dps"] ) {
+			team["dps"][i].mark = false;
+		}
+		for( i in team["support"] ) {
+			team["support"][i].mark = false;
+		}
+	}
+	redraw_teams();
+	redraw_lobby();
 }
 
 function str_padding( source_str, length, padding_char=" " ) {

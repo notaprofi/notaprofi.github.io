@@ -913,14 +913,14 @@ function sort_team( team, sort_field = 'sr' ) {
 	sort_players( team, sort_field );
 }
 
-function adjust_team_ranks( team, win ) {
+function adjust_team_ranks( team, win, is_a_draw = false ) {
 	document.body.style.cursor='wait';
 	document.getElementById("blue_won_button").style.cursor='wait';
 	document.getElementById("red_won_button").style.cursor='wait';
 	
 	SyncPlayersWithTheSpreadsheet(false); // upload data
 	setTimeout( function() { // wait a bit till data is uploaded
-		adjust_players_ranks( team, win );
+		adjust_players_ranks( team, win, is_a_draw );
 		redraw_teams();
 
 		document.body.style.cursor='default';
