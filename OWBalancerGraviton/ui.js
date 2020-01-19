@@ -340,7 +340,7 @@ function edit_player_ok() {
 			player_struct.strikes = strikes;
 			is_param_changes_made = true;
 		} else {
-			alert("Error: Amount of strikes can only be increased by 1 at a time. Current number of strikes: "+player_struct.strikes + ". No changes were made." + strikes);
+			alert("Error: Amount of strikes can only be increased by 1 at a time. Current number of strikes: "+player_struct.strikes + ". No changes were made.");
 		}
 	}
 
