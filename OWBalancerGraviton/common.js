@@ -88,7 +88,7 @@ function player_mark_category( player ) {
 		case 0: strikes_percent = 0; break;
 		case 1: strikes_percent = 0.1; break;
 		case 2: strikes_percent = 0.25; break;
-		case 3: strikes_percent = 0.5; break;
+		case 3: strikes_percent = 0.51; break;
 	}
 	var games_percent = player.games_played/player.games_checkedin + strikes_percent;
 	if(!player.mark) {
