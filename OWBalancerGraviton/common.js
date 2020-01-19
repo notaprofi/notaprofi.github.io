@@ -91,7 +91,7 @@ function player_mark_category( player ) {
 		case 3: strikes_percent = 0.51; break;
 	}
 	var games_percent = player.games_played/player.games_checkedin + strikes_percent;
-	if(!player.mark) {
+	if(!player.mark && player.classes.length > 1) { // role-one-tricks and people who played the last match have a chance to skip the current match
 		return 0;
 	} else if(player.games_checkedin == 0) {
 		return 1; // this shouldn't heppen, but just in case
