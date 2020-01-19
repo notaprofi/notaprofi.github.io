@@ -333,6 +333,17 @@ function edit_player_ok() {
 		}
 	}
 	
+	// strikes
+	var strikes = Number(document.getElementById("dlg_player_strikes").value);
+	if(player_struct.strikes != strikes) {
+		if(player_struct.strikes + 1 == strikes) {
+			player_struct.strikes = strikes;
+			is_param_changes_made = true;
+		} else {
+			alert("Error: Amount of strikes can only be increased by 1 at a time. Current number of strikes: "+player_struct.strikes + ". No changes were made." + strikes);
+		}
+	}
+
 	// pinned mark
 	if ( document.getElementById("dlg_player_pinned").checked ) {
 		pinned_players.add( player_struct.id );
@@ -521,7 +532,7 @@ function export_teams_dlg_open() {
 }
 
 function fill_teams() {
-	for( let iter = 0; iter < 5; iter++) { // player queue iterations: 0. didn't play last match, 1. played last match, but not ghosts, and played small % of matches, 2. the same but bigger % of matches, 3. the same, but close to 100% of matches, 4. ghosts
+	for( let iter = 0; iter < 6; iter++) { // player queue iterations: 0. didn't play last match, 1. played last match, but not ghosts, and played small % of matches, 2. the same but bigger % of matches, 3. the same, but close to 100% of matches, 4. ghosts 5. higher than 100% (this can happen due to strikes)
 	if ( is_role_lock_enabled() ) {
 		for ( var class_name of ["tank", "support", "dps"] ) { // processing in the order from the most unpopular class to the most popular
 			for ( var team_slots of [team1_slots, team2_slots] ) {
@@ -1657,6 +1668,10 @@ function draw_player_cell( player_struct, small=false, is_captain=false, slot_cl
 				new_player_item.style.background = "linear-gradient(to right, #ff55ff 0%, #ff9922 100%)"; 
 				break;
 			}
+			case 5: if(!small) { 
+				new_player_item.style.background = "linear-gradient(to right, #ff55ff 0%, #ff4422 100%)"; 
+				break;
+			}
 			case 1: new_player_item.style.background = "linear-gradient(to right, #ff55ff 0%, #55ff55 100%)"; break;
 		}
 	} else {
@@ -1667,6 +1682,10 @@ function draw_player_cell( player_struct, small=false, is_captain=false, slot_cl
 			}
 			case 3: if(!small) { 
 				new_player_item.style.backgroundColor = "#EECC88";  // yellow
+				break;
+			}
+			case 5: if(!small) { 
+				new_player_item.style.backgroundColor = "#ffaa88";  // pink
 				break;
 			}
 			case 1: new_player_item.style.backgroundColor = "#88cc88"; break; // green
@@ -1811,6 +1830,10 @@ function draw_player_cell( player_struct, small=false, is_captain=false, slot_cl
 	}
 
 	// active classes icons
+	var all_classes = document.createElement("div");
+	all_classes.className = "all-classes-display";
+	var all_classes2 = document.createElement("div");
+	all_classes2.className = "all-classes-display";
 	if ( player_struct.classes !== undefined ) {
 		for(var i=0; i<player_struct.classes.length; i++) {
 			var class_icon = document.createElement("img");
@@ -1823,7 +1846,37 @@ function draw_player_cell( player_struct, small=false, is_captain=false, slot_cl
 			}
 			class_icon.src = "class_icons/"+player_struct.classes[i]+".png";
 			class_icon.title = player_struct.classes[i] + " " + is_undefined(player_struct.sr_by_class[player_struct.classes[i]],0) + " SR";
-			new_player_item.appendChild(class_icon);
+			all_classes2.appendChild(class_icon);
+		}
+	}
+	all_classes.appendChild(all_classes2);
+	new_player_item.appendChild(all_classes);
+
+	// strikes display
+	if(player_struct.strikes > 0) {
+		var strikes_n = document.createElement("div");
+		strikes_n.className = "strikes_display";
+
+		var strikes_display = document.createElement("span");
+		strikes_display.id = "strikes_display_"+player_struct.id;
+		strikes_display.style.color = "red";
+		strikes_display.style.fontSize = "small";
+		strikes_display.style.float = "right";
+		strikes_display.style.marginRight = "3px";
+		strikes_display.style.marginTop = "3px";
+
+		var strikes_text = player_struct.strikes;
+		if( player_struct.empty ) {
+			strikes_text = '\u00A0';
+		}
+		text_node = document.createTextNode( strikes_text );
+		strikes_display.appendChild(text_node);
+		strikes_n.appendChild(strikes_display);
+		if( small ) {
+			all_classes.appendChild(strikes_n);
+		} else {
+			strikes_n.style.opacity = "1";
+			games_display.appendChild(strikes_n);
 		}
 	}
 	
@@ -1877,6 +1930,8 @@ function fill_player_stats_dlg( clear_errors=true ) {
 	}
 	
 	document.getElementById("dlg_player_level").value = player_struct.level;
+
+	document.getElementById("dlg_player_strikes").value = Number(player_struct.strikes);
 	
 	document.getElementById("dlg_player_pinned").checked = pinned_players.has( player_struct.id );
 		

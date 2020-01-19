@@ -69,7 +69,7 @@ function SyncPlayersWithTheSpreadsheet(download_data=true) {
 	}
 
 	// making sure we've downloaded all the changes made by other people
-	var table_range = 'Players!A2:M'+(lobby.length+12+20+1).toString(); // read 20 extra lines, just in case there are new players
+	var table_range = 'Players!A2:P'+(lobby.length+12+20+1).toString(); // read 20 extra lines, just in case there are new players
 	gapi.client.sheets.spreadsheets.values.get({
 		spreadsheetId: spreadsheet,
 		range: table_range,
@@ -77,7 +77,7 @@ function SyncPlayersWithTheSpreadsheet(download_data=true) {
 
 		// converting data to the spreadsheetformat
 		var players_here = [];
-		var length = 13; // from A column to M column
+		var length = 16; // from A column to P column
 		for (player of lobby) {
 			var p_here = PlayerToSpreadsheet(player);
 			players_here.push(p_here);
@@ -197,6 +197,9 @@ function PlayerToSpreadsheet(player) {
 		p_here.push(player.classes[2]);
 	}
 	p_here.push(player.ghost);
+	p_here.push(player.strikes);
+	p_here.push(player.games_played);
+	p_here.push(player.games_checkedin);
 	p_here.push(player.last_updated);
 
 	return p_here;
@@ -225,7 +228,10 @@ function SpreadsheetToPlayer(p) {
 		player.classes.push(p[10]);
 	} 
 	player.ghost = (p[11] == "TRUE");
-	player.last_updated = new Date(p[12]);
+	player.strikes = Number(p[12]);
+	player.games_played = Number(p[13]);
+	player.games_checkedin = Number(p[14]);
+	player.last_updated = new Date(p[15]);
 
 	return player;
 }
@@ -237,8 +243,8 @@ function UpdatePlayer(player) {
 	});
 	if (li >= 0) {
 		player.mark = lobby[li].mark;
-		player.games_played = lobby[li].games_played;
-		player.games_checkedin = lobby[li].games_checkedin;
+		//player.games_played = lobby[li].games_played;
+		//player.games_checkedin = lobby[li].games_checkedin;
 		lobby[li] = player;
 		redraw_player(lobby[li]);
 		return true;
@@ -250,8 +256,8 @@ function UpdatePlayer(player) {
 			for( var i=0; i<team_slots[class_name].length; i++) {
 				if ( team_slots[class_name][i].id == player.id) {
 					player.mark = team_slots[class_name][i].mark;
-					player.games_played = team_slots[class_name][i].games_played;
-					player.games_checkedin = team_slots[class_name][i].games_checkedin;
+					//player.games_played = team_slots[class_name][i].games_played;
+					//player.games_checkedin = team_slots[class_name][i].games_checkedin;
 					team_slots[class_name][i] = player;
 					redraw_player(team_slots[class_name][i]);
 					return true;

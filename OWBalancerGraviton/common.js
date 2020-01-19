@@ -71,6 +71,7 @@ function create_empty_player() {
 			downloaded: false,
 			games_played: 0,
 			games_checkedin: 0,
+			strikes: 0,
 		};
 	
 	for( let class_name of class_names ) {
@@ -82,16 +83,26 @@ function create_empty_player() {
 }
 
 function player_mark_category( player ) {
+	var strikes_percent = player.strikes*0.5/3;
+	switch (player.strikes) {
+		case 0: strikes_percent = 0; break;
+		case 1: strikes_percent = 0.1; break;
+		case 2: strikes_percent = 0.25; break;
+		case 3: strikes_percent = 0.5; break;
+	}
+	var games_percent = player.games_played/player.games_checkedin + strikes_percent;
 	if(!player.mark) {
 		return 0;
 	} else if(player.games_checkedin == 0) {
 		return 1; // this shouldn't heppen, but just in case
-	} else if (player.games_played/player.games_checkedin < 0.7) {
+	} else if (games_percent < 0.7) {
 		return 1;
-	} else if (player.games_played/player.games_checkedin < 0.9) {
+	} else if (games_percent < 0.9) {
 		return 2;
-	} else {
+	} else if (games_percent <= 1) {
 		return 3;
+	} else { // striked players go after ghosts
+		return 5;
 	}
 }
 
@@ -606,6 +617,7 @@ function mark_players() {
 		lobby[i].mark = false;
 		if(checkin_list.has(lobby[i].id)) {
 			lobby[i].games_checkedin++;
+			lobby[i].last_updated = new Date();
 		}
 	}
 	if ( is_role_lock_enabled() ) 	{
@@ -615,6 +627,7 @@ function mark_players() {
 					team[class_name][i].mark = true;
 					team[class_name][i].games_checkedin++;
 					team[class_name][i].games_played++;
+					team[class_name][i].last_updated = new Date();
 				}
 			}
 		}
@@ -622,24 +635,28 @@ function mark_players() {
 }
 
 function reset_players_marks() {
-	for( i in lobby ) {
-		lobby[i].mark = false;
-		lobby[i].games_checkedin = 0;
-		lobby[i].games_played = 0;
-	}
-	if ( is_role_lock_enabled() ) 	{
-		for( let team of  [team1_slots, team2_slots]) {
-			for (class_name in team) {
-				for( i in team[class_name] ) {
-					team[class_name][i].mark = false;
-					team[class_name][i].games_checkedin = 0;
-					team[class_name][i].games_played = 0;
+	if(confirm("This will reset number of games played record for all users of the spreadsheet. Are you sure?")) {
+		for( i in lobby ) {
+			lobby[i].mark = false;
+			lobby[i].games_checkedin = 0;
+			lobby[i].games_played = 0;
+			lobby[i].last_updated = new Date();
+		}
+		if ( is_role_lock_enabled() ) 	{
+			for( let team of  [team1_slots, team2_slots]) {
+				for (class_name in team) {
+					for( i in team[class_name] ) {
+						team[class_name][i].mark = false;
+						team[class_name][i].games_checkedin = 0;
+						team[class_name][i].games_played = 0;
+						team[class_name][i].last_updated = new Date();
+					}
 				}
 			}
 		}
+		redraw_teams();
+		redraw_lobby();
 	}
-	redraw_teams();
-	redraw_lobby();
 }
 
 function checkout_a_player( player_id ) {
@@ -648,6 +665,7 @@ function checkout_a_player( player_id ) {
 	if( player != undefined) {
 		player.games_played = 0;
 		player.games_checkedin = 0;
+		player.last_updated = new Date();
 	} */
 }
 

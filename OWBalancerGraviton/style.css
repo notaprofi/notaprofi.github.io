@@ -301,13 +301,24 @@ li {
 	filter: opacity(40%);
 }
 
+.all-classes-display {
+	float: right;
+}
+
 .games-display {
 	margin-left: "5px";
 	margin-right: "2px";
 	margin-top: "5px";
 	height: 0.5em;
 	float: right;
-	filter: opacity(50%);
+	color: gray;
+}
+
+.strikes-display {
+	margin-right: "5px";
+	margin-top: "5px";
+	height: 0.5em;
+	float: right;
 }
 
 .dlg {
