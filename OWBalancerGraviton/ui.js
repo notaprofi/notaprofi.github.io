@@ -1855,10 +1855,11 @@ function draw_player_cell( player_struct, small=false, is_captain=false, slot_cl
 	all_classes.appendChild(all_classes2);
 	new_player_item.appendChild(all_classes);
 
+	var strikes_n = document.createElement("div");
+	strikes_n.className = "strikes_display";
+
 	// strikes display
 	if(player_struct.strikes > 0) {
-		var strikes_n = document.createElement("div");
-		strikes_n.className = "strikes_display";
 
 		var strikes_display = document.createElement("span");
 		strikes_display.id = "strikes_display_"+player_struct.id;
@@ -1875,12 +1876,31 @@ function draw_player_cell( player_struct, small=false, is_captain=false, slot_cl
 		text_node = document.createTextNode( strikes_text );
 		strikes_display.appendChild(text_node);
 		strikes_n.appendChild(strikes_display);
-		if( small ) {
-			all_classes.appendChild(strikes_n);
-		} else {
-			strikes_n.style.opacity = "1";
-			games_display.appendChild(strikes_n);
+	}
+	// ghost display
+	if(player_struct.ghost && !small) {
+
+		var ghost_display = document.createElement("span");
+		ghost_display.id = "ghost_display_"+player_struct.id;
+		ghost_display.style.color = "blue";
+		ghost_display.style.fontSize = "small";
+		ghost_display.style.float = "right";
+		ghost_display.style.marginRight = "3px";
+		ghost_display.style.marginTop = "3px";
+
+		var ghost_text = " G ";
+		if( player_struct.empty ) {
+			ghost_text = '\u00A0';
 		}
+		text_node = document.createTextNode( ghost_text );
+		ghost_display.appendChild(text_node);
+		strikes_n.appendChild(ghost_display);
+	}
+
+	if( small ) {
+		all_classes.appendChild(strikes_n);
+	} else {
+		games_display.appendChild(strikes_n);
 	}
 	
 	// pinned mark
