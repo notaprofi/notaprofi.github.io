@@ -634,6 +634,23 @@ function mark_players() {
 	}
 }
 
+function unmark_players() {
+	for( i in lobby ) {
+		lobby[i].mark = false;
+	}
+	if ( is_role_lock_enabled() ) 	{
+		for( let team of  [team1_slots, team2_slots]) {
+			for (class_name in team) {
+				for( i in team[class_name] ) {
+					team[class_name][i].mark = false;
+				}
+			}
+		}
+	}
+	redraw_teams();
+	redraw_lobby();
+}
+
 function reset_players_marks() {
 	if(confirm("This will reset number of games played record for all users of the spreadsheet. Are you sure?")) {
 		for( i in lobby ) {
