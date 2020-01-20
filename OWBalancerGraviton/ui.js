@@ -532,10 +532,12 @@ function export_teams_dlg_open() {
 }
 
 function fill_teams() {
-	for( let iter = 0; iter < 6; iter++) { // player queue iterations: 0. didn't play last match, 1. played last match, but not ghosts, and played small % of matches, 2. the same but bigger % of matches, 3. the same, but close to 100% of matches, 4. ghosts 5. higher than 100% (this can happen due to strikes)
 	if ( is_role_lock_enabled() ) {
+		for( let iter = 0; iter < 6; iter++) { // player queue iterations: 0. didn't play last match, 1. played last match, but not ghosts, and played small % of matches, 2. the same but bigger % of matches, 3. the same, but close to 100% of matches, 4. ghosts 5. higher than 100% (this can happen due to strikes) + anyone, independent of a role
 		// pick players by main role first, then by the second and the third role, (then pick regardless of the role - turned off atm)
-		for ( let iRolePriority = 0; iRolePriority < 3; iRolePriority++) {
+		let maxRolePriority = 3;
+		if (iter == 5) maxRolePriority = 4; // since it's the last iteration add people even if they don't fit the role.
+		for ( let iRolePriority = 0; iRolePriority < maxRolePriority; iRolePriority++) {
 			for ( var class_name of ["tank", "support", "dps"] ) { // processing in the order from the most unpopular class to the most popular
 				let available_players = [];
 				for ( let player of lobby ) {
@@ -576,6 +578,7 @@ function fill_teams() {
 				} // for teams
 			} // for class
 		} // for role priority
+	} // iter
 	} else {
 		for ( var team of [team1, team2] ) {
 			var free_slots = get_team_size() - team.length;
@@ -600,7 +603,6 @@ function fill_teams() {
 			}
 		}
 	}
-	} // iter
 	
 	redraw_lobby();
 	redraw_teams();
