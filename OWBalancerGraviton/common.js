@@ -652,32 +652,41 @@ function unmark_players() {
 }
 
 function reset_players_marks() {
-	if(confirm("This will reset number of games played record for all users of the spreadsheet. Are you sure?")) {
-		for( i in lobby ) {
-			if (lobby[i].games_checkedin > 0) {
-				lobby[i].mark = false;
-				lobby[i].games_checkedin = 0;
-				lobby[i].games_played = 0;
-				lobby[i].last_updated = new Date();
+	document.body.style.cursor='wait';
+	document.getElementById("reset_games_button").style.cursor='wait';
+	
+	SyncPlayersWithTheSpreadsheet(false); // upload data
+	setTimeout( function() { // wait a bit till data is uploaded
+		if(confirm("This will reset number of games played record for all users of the spreadsheet. Are you sure?")) {
+			for( i in lobby ) {
+				if (lobby[i].games_checkedin > 0) {
+					lobby[i].mark = false;
+					lobby[i].games_checkedin = 0;
+					lobby[i].games_played = 0;
+					lobby[i].last_updated = new Date();
+				}
 			}
-		}
-		if ( is_role_lock_enabled() ) 	{
-			for( let team of  [team1_slots, team2_slots]) {
-				for (class_name in team) {
-					for( i in team[class_name] ) {
-						if (team[class_name][i].games_checkedin > 0) {
-							team[class_name][i].mark = false;
-							team[class_name][i].games_checkedin = 0;
-							team[class_name][i].games_played = 0;
-							team[class_name][i].last_updated = new Date();
+			if ( is_role_lock_enabled() ) 	{
+				for( let team of  [team1_slots, team2_slots]) {
+					for (class_name in team) {
+						for( i in team[class_name] ) {
+							if (team[class_name][i].games_checkedin > 0) {
+								team[class_name][i].mark = false;
+								team[class_name][i].games_checkedin = 0;
+								team[class_name][i].games_played = 0;
+								team[class_name][i].last_updated = new Date();
+							}
 						}
 					}
 				}
 			}
+			redraw_teams();
+			redraw_lobby();
 		}
-		redraw_teams();
-		redraw_lobby();
-	}
+
+		document.body.style.cursor='default';
+		document.getElementById("reset_games_button").style.cursor='default';
+	}, 1000);
 }
 
 function checkout_a_player( player_id ) {

@@ -927,6 +927,8 @@ function adjust_team_ranks( team, win, is_a_draw = false ) {
 	document.body.style.cursor='wait';
 	document.getElementById("blue_won_button").style.cursor='wait';
 	document.getElementById("red_won_button").style.cursor='wait';
+	document.getElementById("draw_button").style.cursor='wait';
+
 	
 	SyncPlayersWithTheSpreadsheet(false); // upload data
 	setTimeout( function() { // wait a bit till data is uploaded
@@ -937,7 +939,8 @@ function adjust_team_ranks( team, win, is_a_draw = false ) {
 		document.body.style.cursor='default';
 		document.getElementById("blue_won_button").style.cursor='default';
 		document.getElementById("red_won_button").style.cursor='default';
-	}, 500);
+		document.getElementById("draw_button").style.cursor='default';
+	}, 700);
 }
 
 function stop_stats_update() {
@@ -1151,7 +1154,7 @@ function player_contextmenu(ev) {
 		fill_player_stats_dlg();
 		open_dialog("popup_dlg_edit_player");
 
-	}, 500);
+	}, 700);
 }
 
 function player_dblClick(ev) {
