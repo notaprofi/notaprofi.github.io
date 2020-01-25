@@ -1827,13 +1827,16 @@ function draw_player_cell( player_struct, small=false, is_captain=false, slot_cl
 	}
 
 	// games played/checkedin_for
-	if ( !(player_struct.empty != undefined) && !small ) {
+	if ( !(player_struct.empty != undefined) ) {
 		var games_display = document.createElement("div");
 		sr_display.id = "games_display_"+player_struct.id;
-		var games_text = player_struct.games_played+"/"+player_struct.games_checkedin;
+		var games_text = " "+player_struct.games_played+"/"+player_struct.games_checkedin+" ";
 		text_node = document.createTextNode( games_text );
 		games_display.appendChild(text_node);
 		games_display.classList.add("games-display");
+		games_display.style.marginLeft = "5px";
+		games_display.style.marginRight = "1px";
+		games_display.style.marginTop = "1px";
 		new_player_item.appendChild(games_display);
 	}
 
@@ -1872,7 +1875,7 @@ function draw_player_cell( player_struct, small=false, is_captain=false, slot_cl
 		strikes_display.style.fontSize = "small";
 		strikes_display.style.float = "right";
 		strikes_display.style.marginRight = "3px";
-		strikes_display.style.marginTop = "3px";
+		strikes_display.style.marginTop = "2px";
 
 		var strikes_text = player_struct.strikes;
 		if( player_struct.empty ) {
@@ -1891,7 +1894,7 @@ function draw_player_cell( player_struct, small=false, is_captain=false, slot_cl
 		ghost_display.style.fontSize = "small";
 		ghost_display.style.float = "right";
 		ghost_display.style.marginRight = "3px";
-		ghost_display.style.marginTop = "3px";
+		ghost_display.style.marginTop = "2px";
 
 		var ghost_text = " G ";
 		if( player_struct.empty ) {
@@ -1902,9 +1905,10 @@ function draw_player_cell( player_struct, small=false, is_captain=false, slot_cl
 		strikes_n.appendChild(ghost_display);
 	}
 
-	if( small ) {
-		all_classes.appendChild(strikes_n);
-	} else {
+	//if( small ) {
+	//	all_classes.appendChild(strikes_n);
+	//} else {
+	if ( !(player_struct.empty != undefined) ) {
 		games_display.appendChild(strikes_n);
 	}
 	
