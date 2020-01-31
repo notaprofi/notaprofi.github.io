@@ -568,7 +568,7 @@ function adjust_players_ranks( teamW, teamL, is_a_draw = false ) {
 		for(team of [teamW, teamL]) {
 			for( class_name of ["tank", "dps", "support"] ) {
 				for( player of team[class_name] ) {
-					if( player.sr_by_class[class_name] > 0 ) {
+					if( player.classes.indexOf(class_name) != -1 && player.sr_by_class[class_name] > 0 ) {
 						i++;
 					}
 				}
