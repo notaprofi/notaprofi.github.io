@@ -146,7 +146,7 @@ var Balancer = {
 			this.debugMsg( "input data changed, calculating new balance" );
 			this.old_state = new_state;
 			
-			// balance magic			
+			// balance magic	
 			if ( this.algorithm == "classic" ) {
 				this.debugMsg( "using classic alg" );
 				this.is_successfull = this.balanceTeamsClassic();
@@ -741,9 +741,9 @@ var Balancer = {
 				class_count[slot_class] += 1;
 			}
 			team_sr[0] = Math.round(team_sr[0] / this.team_size);
-			team_sr["tank"] = Math.round(team_sr["tank"] / this.team_size);
-			team_sr["dps"] = Math.round(team_sr["dps"] / this.team_size);
-			team_sr["support"] = Math.round(team_sr["support"] / this.team_size);
+			team_sr["tank"]    = Math.round(team_sr["tank"]    * (2 / class_count["tank"])    / this.team_size);
+			team_sr["dps"]     = Math.round(team_sr["dps"]     * (2 / class_count["dps"])     / this.team_size);
+			team_sr["support"] = Math.round(team_sr["support"] * (2 / class_count["support"]) / this.team_size);
 		}
 		return team_sr;
 	},
