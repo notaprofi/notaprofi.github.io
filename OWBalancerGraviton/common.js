@@ -564,21 +564,21 @@ function sort_players( team, sort_field = 'sr', order_asc=false ) {
 
 function adjust_players_ranks( teamW, teamL, is_a_draw = false ) {
 	if ( is_role_lock_enabled() ) {
-		// check if there are all 12 players
-		var i = 0;
-		for(team of [teamW, teamL]) {
-			for( class_name of ["tank", "dps", "support"] ) {
-				for( player of team[class_name] ) {
-					if( player.classes.indexOf(class_name) != -1 && player.sr_by_class[class_name] > 0 ) {
-						i++;
-					}
-				}
-			}
-		}
-		if (i<12) {
-			alert('Error: Players are not placed to the teams correctly. SR calculation is impossible.');
-			return false;
-		}
+		// // check if there are all 12 players EDIT: looks like this should work for any number of players
+		// var i = 0;
+		// for(team of [teamW, teamL]) {
+		// 	for( class_name of ["tank", "dps", "support"] ) {
+		// 		for( player of team[class_name] ) {
+		// 			if( player.classes.indexOf(class_name) != -1 && player.sr_by_class[class_name] > 0 ) {
+		// 				i++;
+		// 			}
+		// 		}
+		// 	}
+		// }
+		// if (i<10) { 
+		// 	alert('Error: Less than 10 players. SR calculation is impossible.');
+		// 	return false;
+		// }
 
 		var teamW_sr = calc_team_sr(teamW, teamW);
 		var teamL_sr = calc_team_sr(teamL, teamL);
