@@ -95,7 +95,7 @@ function player_mark_category( player ) {
 	if(!player.mark && player.classes.length > 0) {
 		return 0;
 	} else if(player.games_checkedin == 0) {
-		return 1; // this shouldn't heppen, but just in case
+		return 1; // this shouldn't happen, but just in case
 	} else if (games_percent < 0.7) {
 		return 1;
 	} else if (games_percent < 0.9) {

@@ -146,7 +146,8 @@ var Balancer = {
 			this.debugMsg( "input data changed, calculating new balance" );
 			this.old_state = new_state;
 			
-			// balance magic	
+			// balance magic
+			this.algorithm = "rolelock"; // classic is too old and bugged
 			if ( this.algorithm == "classic" ) {
 				this.debugMsg( "using classic alg" );
 				this.is_successfull = this.balanceTeamsClassic();

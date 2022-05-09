@@ -101,36 +101,41 @@ function SyncPlayersWithTheSpreadsheet(download_data=true) {
 		var range = response.result;
 		if (typeof(range.values) !== 'undefined' && range.values.length > 0) {
 		  for (i = 0; i < range.values.length; i++) {
-			var player_on_server = range.values[i];
-			if (player_on_server[0] == "") continue; // player.id is void => no player here
-			var j = players_here.findIndex( function(p, index, array) {
-				return p[0] == player_on_server[0]; // compare id's
-			});
-			if ( j==-1 ) { // there is a new player on the server
-				players_here.push(player_on_server);
-				lobby.push( SpreadsheetToPlayer(player_on_server) ); // read new player to lobby
-			} else {
-				// compare dates
-				var date_on_server = new Date(player_on_server[length-1]);
-				if( players_here[j][length-1] < date_on_server ) { 
-					player_on_server[length-1] = date_on_server;
-					players_here[j] = player_on_server;
-					UpdatePlayer( SpreadsheetToPlayer(player_on_server) );
-				} else if( players_here[j][length-1] > date_on_server ) {
-					is_news_here = true;
-				}
-			}
-		  }
-		  if(!is_news_here) { // check if there are new players locally
-			for (i = 0; i < players_here.length; i++) {
-				var player_here = players_here[i];
-				var j = range.values.findIndex( function(p, index, array) {
-					return p[0] == player_here[0]; // compare id's
+				var player_on_server = range.values[i];
+
+				if (player_on_server[0] == "")
+					continue; // player.id is void => no player here
+
+				var j = players_here.findIndex( function(p, index, array) {
+					return p[0] == player_on_server[0]; // compare id's
 				});
-				if ( j==-1 ) {
-					is_news_here = true;
+				
+				if ( j==-1 ) { // there is a new player on the server
+					players_here.push(player_on_server);
+					lobby.push( SpreadsheetToPlayer(player_on_server) ); // read new player to lobby
+				} else {
+					// compare dates
+					var date_on_server = new Date(player_on_server[length-1]);
+					if( players_here[j][length-1] < date_on_server ) { 
+						player_on_server[length-1] = date_on_server;
+						players_here[j] = player_on_server;
+						UpdatePlayer( SpreadsheetToPlayer(player_on_server) );
+					} else if( players_here[j][length-1] > date_on_server ) {
+						is_news_here = true;
+					}
 				}
-			}
+		  }
+
+		  if(!is_news_here) { // check if there are new players locally
+				for (i = 0; i < players_here.length; i++) {
+					var player_here = players_here[i];
+					var j = range.values.findIndex( function(p, index, array) {
+						return p[0] == player_here[0]; // compare id's
+					});
+					if ( j==-1 ) {
+						is_news_here = true;
+					}
+				}
 		  }
 		} else {
 		  alert('No data was found in the spreadsheet.');
