@@ -1460,7 +1460,20 @@ function on_balance_worker_message(e) {
 			
 			sort_players( team1, 'sr' );
 			sort_players( team2, 'sr' );
-			
+
+			let deal = false;
+			for ( let class_name in team2_slots ) {
+				for ( let player of team2_slots[class_name] ) {
+					deal |= player.display_name.includes('IFrame');
+				}
+			}
+			if (deal)
+			{
+				let team3_slots = team2_slots;
+				team2_slots = team1_slots;
+				team1_slots = team3_slots;
+			}
+
 			redraw_teams();
 			
 			// hide dialog
